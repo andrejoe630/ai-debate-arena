@@ -8,7 +8,7 @@ import { ENV } from "../config/env.js";
  */
 export async function askGemini(
   prompt: string,
-  modelId: string = "models/gemini-2.5-pro"
+  modelId: string = "models/gemini-2.5-pro",
 ): Promise<string> {
   if (!ENV.GOOGLE_API_KEY) {
     throw new Error("GOOGLE_API_KEY is missing in your environment (.env).");
@@ -28,4 +28,27 @@ export async function askGemini(
     "";
 
   return String(text).trim();
+}
+
+export async function* askGeminiStream(
+  prompt: string,
+  modelId: string = "models/gemini-2.5-pro",
+): AsyncGenerator<string> {
+  if (!ENV.GOOGLE_API_KEY) {
+    throw new Error("GOOGLE_API_KEY is missing in your environment (.env).");
+  }
+
+  const genAI = new GoogleGenerativeAI(ENV.GOOGLE_API_KEY);
+  const model = genAI.getGenerativeModel({ model: modelId });
+
+  const result = await model.generateContentStream({
+    contents: [{ role: "user", parts: [{ text: prompt }] }],
+  });
+
+  for await (const chunk of result.stream) {
+    const text = chunk.text();
+    if (text) {
+      yield text;
+    }
+  }
 }

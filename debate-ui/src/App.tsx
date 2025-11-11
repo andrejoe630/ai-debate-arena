@@ -218,30 +218,8 @@ export default function App() {
                 if (currentEvent === "progress") {
                   setProgressStatus(data.status);
                 } else if (currentEvent === "message") {
-                  // Typewriter effect: reveal words one by one
                   const incoming = data as Message;
-                  // Push placeholder message with empty text
-                  setStreamingMessages((prev) => [
-                    ...prev,
-                    { ...incoming, text: "" },
-                  ]);
-                  const words = (incoming.text || "").split(/\s+/);
-                  let i = 0;
-                  const interval = setInterval(() => {
-                    i++;
-                    setStreamingMessages((prev) => {
-                      const next = [...prev];
-                      const lastIndex = next.length - 1;
-                      if (lastIndex >= 0) {
-                        next[lastIndex] = {
-                          ...next[lastIndex],
-                          text: words.slice(0, i).join(" "),
-                        };
-                      }
-                      return next;
-                    });
-                    if (i >= words.length) clearInterval(interval);
-                  }, 18);
+                  setStreamingMessages((prev) => [...prev, incoming]);
                 } else if (currentEvent === "complete") {
                   const completeResult = { ...data, rounds, temperature };
                   setResult(completeResult);
@@ -341,27 +319,7 @@ export default function App() {
                   setProgressStatus(data.status);
                 } else if (currentEvent === "message") {
                   const incoming = data as DiscussionMessage;
-                  setStreamingDiscussionMessages((prev) => [
-                    ...prev,
-                    { ...incoming, text: "" },
-                  ]);
-                  const words = (incoming.text || "").split(/\s+/);
-                  let i = 0;
-                  const interval = setInterval(() => {
-                    i++;
-                    setStreamingDiscussionMessages((prev) => {
-                      const next = [...prev];
-                      const lastIndex = next.length - 1;
-                      if (lastIndex >= 0) {
-                        next[lastIndex] = {
-                          ...next[lastIndex],
-                          text: words.slice(0, i).join(" "),
-                        };
-                      }
-                      return next;
-                    });
-                    if (i >= words.length) clearInterval(interval);
-                  }, 18);
+                  setStreamingDiscussionMessages((prev) => [...prev, incoming]);
                 } else if (currentEvent === "complete") {
                   setDiscussionResult(data);
                   setProgressStatus("Discussion complete!");
