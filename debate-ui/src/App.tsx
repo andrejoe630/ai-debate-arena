@@ -47,6 +47,9 @@ export default function App() {
   const [streamingMessages, setStreamingMessages] = useState<Message[]>([]);
   const [streamingDiscussionMessages, setStreamingDiscussionMessages] =
     useState<DiscussionMessage[]>([]);
+  const [streamingMessageTexts, setStreamingMessageTexts] = useState<
+    Record<number, string>
+  >({});
 
   // New feature states
   const [rounds, setRounds] = useState(2);
@@ -217,14 +220,28 @@ export default function App() {
 
                 if (currentEvent === "progress") {
                   setProgressStatus(data.status);
+                } else if (currentEvent === "chunk") {
+                  // Append chunk to the streaming message
+                  const { text, msgIndex } = data;
+                  setStreamingMessageTexts((prev) => ({
+                    ...prev,
+                    [msgIndex]: (prev[msgIndex] || "") + text,
+                  }));
                 } else if (currentEvent === "message") {
                   const incoming = data as Message;
                   setStreamingMessages((prev) => [...prev, incoming]);
+                  // Clear the streaming text for this message
+                  setStreamingMessageTexts((prev) => {
+                    const newTexts = { ...prev };
+                    delete newTexts[incoming.round * 10]; // Clear it
+                    return newTexts;
+                  });
                 } else if (currentEvent === "complete") {
                   const completeResult = { ...data, rounds, temperature };
                   setResult(completeResult);
                   setProgressStatus("Debate complete!");
                   setLoading(false);
+                  setStreamingMessageTexts({}); // Clear all streaming texts
                   // Auto-save debate
                   saveDebate("debate", completeResult);
                 } else if (currentEvent === "error") {
@@ -317,13 +334,27 @@ export default function App() {
 
                 if (currentEvent === "progress") {
                   setProgressStatus(data.status);
+                } else if (currentEvent === "chunk") {
+                  // Append chunk to the streaming message
+                  const { text, msgIndex } = data;
+                  setStreamingMessageTexts((prev) => ({
+                    ...prev,
+                    [msgIndex]: (prev[msgIndex] || "") + text,
+                  }));
                 } else if (currentEvent === "message") {
                   const incoming = data as DiscussionMessage;
                   setStreamingDiscussionMessages((prev) => [...prev, incoming]);
+                  // Clear the streaming text for this message
+                  setStreamingMessageTexts((prev) => {
+                    const newTexts = { ...prev };
+                    delete newTexts[incoming.messageNumber]; // Clear it
+                    return newTexts;
+                  });
                 } else if (currentEvent === "complete") {
                   setDiscussionResult(data);
                   setProgressStatus("Discussion complete!");
                   setLoading(false);
+                  setStreamingMessageTexts({}); // Clear all streaming texts
                   // Auto-save discussion
                   saveDebate("discussion", data);
                 } else if (currentEvent === "error") {
@@ -846,6 +877,37 @@ export default function App() {
                             />
                           ),
                         )}
+                        {/* Show currently streaming message */}
+                        {loading &&
+                          streamingMessageTexts[streamingMessages.length] && (
+                            <div className="animate-fadeIn opacity-75">
+                              <MessageWithReactions
+                                key={`streaming-${streamingMessages.length}`}
+                                message={{
+                                  role:
+                                    streamingMessages.length % 2 === 0
+                                      ? "affirmative"
+                                      : "negative",
+                                  model:
+                                    streamingMessages.length % 2 === 0
+                                      ? affModel
+                                      : negModel,
+                                  text: streamingMessageTexts[
+                                    streamingMessages.length
+                                  ],
+                                  round:
+                                    Math.floor(streamingMessages.length / 2) +
+                                    1,
+                                }}
+                                index={streamingMessages.length}
+                                reactions={
+                                  messageReactions[streamingMessages.length]
+                                }
+                                onReact={handleReaction}
+                                theme={theme}
+                              />
+                            </div>
+                          )}
                       </div>
                     )}
 
@@ -898,6 +960,69 @@ export default function App() {
                             </div>
                           );
                         })}
+                        {/* Show currently streaming message */}
+                        {loading &&
+                          streamingMessageTexts[
+                            streamingDiscussionMessages.length
+                          ] && (
+                            <div className="animate-fadeIn opacity-75">
+                              <div className="flex gap-4">
+                                {(() => {
+                                  const modelOrder: (
+                                    | "openai"
+                                    | "anthropic"
+                                    | "gemini"
+                                  )[] = ["openai", "anthropic", "gemini"];
+                                  const currentModel =
+                                    modelOrder[
+                                      streamingDiscussionMessages.length % 3
+                                    ];
+                                  const modelColors = {
+                                    openai: "bg-blue-500",
+                                    anthropic: "bg-orange-500",
+                                    gemini: "bg-green-500",
+                                  };
+                                  const modelNames = {
+                                    openai: "ChatGPT-5",
+                                    anthropic: "Claude 4.5",
+                                    gemini: "Gemini 2.5",
+                                  };
+                                  return (
+                                    <>
+                                      <div
+                                        className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold ${modelColors[currentModel]}`}
+                                      >
+                                        {currentModel === "openai"
+                                          ? "G"
+                                          : currentModel === "anthropic"
+                                            ? "C"
+                                            : "G"}
+                                      </div>
+                                      <div className="flex-1 space-y-2">
+                                        <div className="flex items-baseline gap-2">
+                                          <span className="font-semibold text-gray-900">
+                                            {modelNames[currentModel]}
+                                          </span>
+                                          <span className="text-xs text-gray-500">
+                                            Message #
+                                            {streamingDiscussionMessages.length +
+                                              1}
+                                          </span>
+                                        </div>
+                                        <div className="text-gray-800 leading-relaxed whitespace-pre-wrap">
+                                          {
+                                            streamingMessageTexts[
+                                              streamingDiscussionMessages.length
+                                            ]
+                                          }
+                                        </div>
+                                      </div>
+                                    </>
+                                  );
+                                })()}
+                              </div>
+                            </div>
+                          )}
                       </div>
                     )}
 
