@@ -6,6 +6,15 @@ type Props = {
 }
 
 export default function MessageWithReactions({ message, theme }: Props) {
+  // Map API model names to display names
+  const modelDisplayNames: Record<string, string> = {
+    'gpt-4o': 'GPT-5',
+    'openai': 'GPT-5',
+    'anthropic': 'Claude 4.5',
+    'gemini': 'Gemini 2.5',
+  }
+
+  const displayModel = modelDisplayNames[message.model] || message.model
 
   return (
     <div className="animate-fadeIn">
@@ -32,7 +41,7 @@ export default function MessageWithReactions({ message, theme }: Props) {
             <span className={`text-xs ${
               theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
             }`}>
-              {message.model} · Round {message.round}
+              {displayModel} · Round {message.round}
             </span>
           </div>
           <div className={`leading-relaxed whitespace-pre-wrap ${
