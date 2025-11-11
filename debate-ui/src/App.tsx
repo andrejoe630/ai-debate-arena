@@ -1104,14 +1104,22 @@ export default function App() {
 
                     {/* Consensus message */}
                     {discussionResult?.consensus && (
-                      <div className="mb-8 p-6 bg-green-50 border-2 border-green-200 rounded-xl">
+                      <div className={`mb-8 p-6 border-2 rounded-xl ${
+                        theme === "dark"
+                          ? "bg-green-900/20 border-green-700"
+                          : "bg-green-50 border-green-200"
+                      }`}>
                         <div className="flex items-center gap-2 mb-3">
                           <span className="text-2xl">🤝</span>
-                          <h3 className="text-lg font-semibold text-green-900">
+                          <h3 className={`text-lg font-semibold ${
+                            theme === "dark" ? "text-green-300" : "text-green-900"
+                          }`}>
                             Consensus Reached!
                           </h3>
                         </div>
-                        <p className="text-gray-800 leading-relaxed">
+                        <p className={`leading-relaxed ${
+                          theme === "dark" ? "text-gray-300" : "text-gray-800"
+                        }`}>
                           {discussionResult.consensus}
                         </p>
                       </div>
@@ -1119,18 +1127,28 @@ export default function App() {
 
                     {/* Judge verdicts - Debate mode */}
                     {mode === "debate" && result && result.verdicts && (
-                      <div className="mt-12 pt-8 border-t border-gray-300">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-6 text-center">
+                      <div className={`mt-12 pt-8 border-t ${
+                        theme === "dark" ? "border-gray-600" : "border-gray-300"
+                      }`}>
+                        <h3 className={`text-lg font-semibold mb-6 text-center ${
+                          theme === "dark" ? "text-gray-100" : "text-gray-900"
+                        }`}>
                           Judge Verdicts
                         </h3>
                         <div className="grid gap-4 md:grid-cols-3">
                           {result.verdicts.map((v) => (
                             <div
                               key={v.judge}
-                              className="bg-white rounded-xl p-4 border border-gray-300 shadow-sm"
+                              className={`rounded-xl p-4 border shadow-sm ${
+                                theme === "dark"
+                                  ? "bg-gray-800 border-gray-700"
+                                  : "bg-white border-gray-300"
+                              }`}
                             >
                               <div className="flex items-center justify-between mb-3">
-                                <span className="font-semibold text-gray-900 capitalize">
+                                <span className={`font-semibold capitalize ${
+                                  theme === "dark" ? "text-gray-100" : "text-gray-900"
+                                }`}>
                                   {v.judge}
                                 </span>
                                 <span
@@ -1149,7 +1167,9 @@ export default function App() {
                                       : "TIE"}
                                 </span>
                               </div>
-                              <p className="text-sm text-gray-600 leading-relaxed">
+                              <p className={`text-sm leading-relaxed ${
+                                theme === "dark" ? "text-gray-300" : "text-gray-600"
+                              }`}>
                                 {v.reasoning}
                               </p>
                             </div>
@@ -1162,9 +1182,15 @@ export default function App() {
                     {mode === "discussion" &&
                       discussionResult?.verdicts &&
                       discussionResult.requiredJudging && (
-                        <div className="mt-12 pt-8 border-t border-gray-300">
-                          <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
-                            <p className="text-yellow-800 font-medium">
+                        <div className={`mt-12 pt-8 border-t ${
+                          theme === "dark" ? "border-gray-600" : "border-gray-300"
+                        }`}>
+                          <div className={`mb-6 p-4 border rounded-lg text-center ${
+                            theme === "dark"
+                              ? "bg-yellow-900/20 border-yellow-700 text-yellow-300"
+                              : "bg-yellow-50 border-yellow-200 text-yellow-800"
+                          }`}>
+                            <p className="font-medium">
                               💭 No consensus reached after 15 messages. Judges
                               selected the most compelling perspective:
                             </p>
@@ -1180,10 +1206,16 @@ export default function App() {
                               return (
                                 <div
                                   key={v.judge}
-                                  className="bg-white rounded-xl p-4 border border-gray-300 shadow-sm"
+                                  className={`rounded-xl p-4 border shadow-sm ${
+                                    theme === "dark"
+                                      ? "bg-gray-800 border-gray-700"
+                                      : "bg-white border-gray-300"
+                                  }`}
                                 >
                                   <div className="flex items-center justify-between mb-3">
-                                    <span className="font-semibold text-gray-900 capitalize">
+                                    <span className={`font-semibold capitalize ${
+                                      theme === "dark" ? "text-gray-100" : "text-gray-900"
+                                    }`}>
                                       {v.judge === "openai"
                                         ? "GPT Judge"
                                         : v.judge === "anthropic"
@@ -1194,7 +1226,9 @@ export default function App() {
                                       {getBestStanceLabel(v.winner as string)}
                                     </span>
                                   </div>
-                                  <p className="text-sm text-gray-600 leading-relaxed">
+                                  <p className={`text-sm leading-relaxed ${
+                                    theme === "dark" ? "text-gray-300" : "text-gray-600"
+                                  }`}>
                                     {v.reasoning}
                                   </p>
                                 </div>
