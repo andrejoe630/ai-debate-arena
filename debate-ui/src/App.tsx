@@ -124,7 +124,29 @@ export default function App() {
     }
   };
 
+  const handleModeSwitch = (newMode: Mode) => {
+    if (newMode === mode) return; // Already in this mode
+
+    // Clear all state when switching modes
+    setMode(newMode);
+    setResult(null);
+    setDiscussionResult(null);
+    setStreamingMessages([]);
+    setStreamingDiscussionMessages([]);
+    setStreamingMessageTexts({});
+    setMessageReactions({});
+    setCurrentTopic("");
+    setError(null);
+    setProgressStatus("");
+  };
+
   // Debug log whenever advancedMode changes (disabled to prevent spam)
+</thinking>
+
+<old_text line=1296>
+                <button
+                  onClick={() => setMode("debate")}
+                  disabled={loading}
   // console.log("🎭 DEBATE APP STATE:", {
   //   mode,
   //   advancedMode,
@@ -1294,7 +1316,7 @@ export default function App() {
                 }`}
               >
                 <button
-                  onClick={() => setMode("debate")}
+                  onClick={() => handleModeSwitch("debate")}
                   disabled={loading}
                   className={`flex-1 px-3 py-1.5 rounded-md text-sm font-medium transition ${
                     mode === "debate"
@@ -1309,7 +1331,7 @@ export default function App() {
                   Debate
                 </button>
                 <button
-                  onClick={() => setMode("discussion")}
+                  onClick={() => handleModeSwitch("discussion")}
                   disabled={loading}
                   className={`flex-1 px-3 py-1.5 rounded-md text-sm font-medium transition ${
                     mode === "discussion"
