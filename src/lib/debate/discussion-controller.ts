@@ -159,9 +159,22 @@ Respond to the discussion above (100-150 words). If you agree with the previous 
     // Get response from current model with streaming
     let response = "";
     const msgIndex = messages.length;
-    for await (const chunk of MODEL_MAP_STREAM[currentModel](prompt)) {
-      response += chunk;
-      onProgress?.("chunk", { text: chunk, msgIndex });
+    try {
+      for await (const chunk of MODEL_MAP_STREAM[currentModel](prompt)) {
+        response += chunk;
+        onProgress?.("chunk", { text: chunk, msgIndex });
+      }
+    } catch (error: any) {
+      console.error(`Error streaming from ${currentModel}:`, error);
+      onProgress?.("error", { 
+        message: `${MODEL_NAMES[currentModel]} failed: ${error.message}`,
+        model: currentModel
+      });
+      throw new Error(`${MODEL_NAMES[currentModel]} streaming failed: ${error.message}`);
+    }
+    
+    if (!response || response.trim().length === 0) {
+      throw new Error(`${MODEL_NAMES[currentModel]} returned empty response`);
     }
 
     const message: DiscussionMessage = {
