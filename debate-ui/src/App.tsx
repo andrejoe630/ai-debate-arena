@@ -416,7 +416,7 @@ export default function App() {
     <div
       className={`h-screen flex overflow-hidden ${
         theme === "dark"
-          ? "bg-gray-950 text-white"
+          ? "bg-gray-800 text-white"
           : "bg-[#f7f3f0] text-gray-900"
       }`}
     >
@@ -434,7 +434,7 @@ export default function App() {
           sidebarCollapsed ? "w-16" : "w-64"
         } ${
           theme === "dark"
-            ? "bg-gray-900 border-gray-800"
+            ? "bg-gray-700 border-gray-600"
             : "bg-white border-gray-200"
         } ${
           // Mobile: hidden by default, shown as overlay when mobileMenuOpen is true
@@ -444,7 +444,7 @@ export default function App() {
         {/* Sidebar Header */}
         <div
           className={`p-4 border-b flex items-center justify-between ${
-            theme === "dark" ? "border-gray-800" : "border-gray-200"
+            theme === "dark" ? "border-gray-600" : "border-gray-200"
           }`}
         >
           {!sidebarCollapsed && (
@@ -491,12 +491,11 @@ export default function App() {
               sidebarCollapsed ? "justify-center" : "gap-3"
             } ${
               theme === "dark"
-                ? "hover:bg-gray-800 text-gray-400 hover:text-gray-200"
+                ? "hover:bg-gray-600 text-gray-300 hover:text-gray-100"
                 : "hover:bg-gray-100 text-gray-600 hover:text-gray-900"
             }`}
             title={sidebarCollapsed ? "Browse Topics" : ""}
           >
-            <span className="text-lg">💡</span>
             {!sidebarCollapsed && <span>Browse Topics</span>}
           </button>
 
@@ -506,12 +505,11 @@ export default function App() {
               sidebarCollapsed ? "justify-center" : "gap-3"
             } ${
               theme === "dark"
-                ? "hover:bg-gray-800 text-gray-400 hover:text-gray-200"
+                ? "hover:bg-gray-600 text-gray-300 hover:text-gray-100"
                 : "hover:bg-gray-100 text-gray-600 hover:text-gray-900"
             }`}
             title={sidebarCollapsed ? "Statistics" : ""}
           >
-            <span className="text-lg">📊</span>
             {!sidebarCollapsed && <span>Statistics</span>}
           </button>
 
@@ -522,15 +520,14 @@ export default function App() {
             } ${
               showSettings
                 ? theme === "dark"
-                  ? "bg-gray-800 text-gray-200"
+                  ? "bg-gray-600 text-gray-100"
                   : "bg-gray-100 text-gray-900"
                 : theme === "dark"
-                  ? "hover:bg-gray-800 text-gray-400 hover:text-gray-200"
+                  ? "hover:bg-gray-600 text-gray-300 hover:text-gray-100"
                   : "hover:bg-gray-100 text-gray-600 hover:text-gray-900"
             }`}
             title={sidebarCollapsed ? "Settings" : ""}
           >
-            <span className="text-lg">⚙️</span>
             {!sidebarCollapsed && <span>Settings</span>}
           </button>
 
@@ -538,7 +535,7 @@ export default function App() {
             <>
               <div
                 className={`my-3 border-t ${
-                  theme === "dark" ? "border-gray-800" : "border-gray-200"
+                  theme === "dark" ? "border-gray-600" : "border-gray-200"
                 }`}
               ></div>
 
@@ -564,7 +561,7 @@ export default function App() {
                       onClick={() => handleLoadDebate(debate)}
                       className={`w-full text-left px-3 py-2 rounded-md text-sm transition ${
                         theme === "dark"
-                          ? "hover:bg-gray-800 text-gray-400 hover:text-gray-200"
+                          ? "hover:bg-gray-600 text-gray-300 hover:text-gray-100"
                           : "hover:bg-gray-100 text-gray-600 hover:text-gray-900"
                       }`}
                     >
@@ -597,7 +594,7 @@ export default function App() {
         {/* Sidebar Footer */}
         <div
           className={`p-2 border-t ${
-            theme === "dark" ? "border-gray-800" : "border-gray-200"
+            theme === "dark" ? "border-gray-600" : "border-gray-200"
           }`}
         >
           {/* Auth + Theme */}
@@ -608,7 +605,7 @@ export default function App() {
                 sidebarCollapsed ? "justify-center" : "gap-3"
               } ${
                 theme === "dark"
-                  ? "hover:bg-gray-800 text-gray-400 hover:text-gray-200"
+                  ? "hover:bg-gray-600 text-gray-300 hover:text-gray-100"
                   : "hover:bg-gray-100 text-gray-600 hover:text-gray-900"
               }`}
               title={
@@ -619,7 +616,6 @@ export default function App() {
                   : ""
               }
             >
-              <span className="text-lg">{theme === "dark" ? "🌙" : "☀️"}</span>
               {!sidebarCollapsed && (
                 <span>{theme === "dark" ? "Dark" : "Light"} Mode</span>
               )}
@@ -634,13 +630,12 @@ export default function App() {
                     sidebarCollapsed ? "justify-center" : "gap-3"
                   } ${
                     theme === "dark"
-                      ? "hover:bg-gray-800 text-gray-400 hover:text-gray-200"
+                      ? "hover:bg-gray-600 text-gray-300 hover:text-gray-100"
                       : "hover:bg-gray-100 text-gray-600 hover:text-gray-900"
                   }`}
                   title={sidebarCollapsed ? "Sign out" : ""}
                 >
-                  <span className="text-lg">🚪</span>
-                  {!sidebarCollapsed && <span>Sign out</span>}
+                  {!sidebarCollapsed && <span>Sign Out</span>}
                 </button>
               ) : (
                 <button
@@ -649,13 +644,12 @@ export default function App() {
                     sidebarCollapsed ? "justify-center" : "gap-3"
                   } ${
                     theme === "dark"
-                      ? "hover:bg-gray-800 text-gray-400 hover:text-gray-200"
+                      ? "hover:bg-gray-600 text-gray-300 hover:text-gray-100"
                       : "hover:bg-gray-100 text-gray-600 hover:text-gray-900"
                   }`}
                   title={sidebarCollapsed ? "Sign in" : ""}
                 >
-                  <span className="text-lg">🔐</span>
-                  {!sidebarCollapsed && <span>Sign in</span>}
+                  {!sidebarCollapsed && <span>Sign In</span>}
                 </button>
               ))}
           </div>
@@ -668,7 +662,7 @@ export default function App() {
         <div
           className={`lg:hidden flex items-center gap-3 px-4 py-3 border-b ${
             theme === "dark"
-              ? "bg-gray-900 border-gray-800"
+              ? "bg-gray-700 border-gray-600"
               : "bg-white border-gray-200"
           }`}
         >
@@ -700,7 +694,7 @@ export default function App() {
           <div
             className={`border-b px-6 py-4 ${
               theme === "dark"
-                ? "bg-gray-900 border-gray-800"
+                ? "bg-gray-700 border-gray-600"
                 : "bg-white border-gray-200"
             }`}
           >
@@ -773,10 +767,11 @@ export default function App() {
                   streamingMessages.length === 0 &&
                   streamingDiscussionMessages.length === 0 && (
                     <div className="flex-1 flex items-center justify-center px-4">
-                      <div className="text-center">
-                        <div className="text-7xl mb-6">
-                          {mode === "debate" ? "🎭" : "💬"}
-                        </div>
+                      >
+                        <div className="text-center">
+                          <div className="text-7xl mb-6">
+                            🎭
+                          </div>
                         <h1
                           className={`text-5xl font-serif mb-3 ${
                             theme === "dark" ? "text-gray-100" : "text-gray-900"
@@ -1041,7 +1036,7 @@ export default function App() {
             <div
               className={`rounded-2xl shadow-lg ${
                 theme === "dark"
-                  ? "bg-gray-900 border border-gray-800"
+                  ? "bg-gray-700 border border-gray-600"
                   : "bg-white border border-gray-200"
               }`}
             >
@@ -1049,7 +1044,7 @@ export default function App() {
               <div
                 className={`flex gap-1 p-2 ${
                   theme === "dark"
-                    ? "border-b border-gray-800"
+                    ? "border-b border-gray-600"
                     : "border-b border-gray-100"
                 }`}
               >
@@ -1059,14 +1054,14 @@ export default function App() {
                   className={`flex-1 px-3 py-1.5 rounded-md text-sm font-medium transition ${
                     mode === "debate"
                       ? theme === "dark"
-                        ? "bg-gray-800 text-gray-100"
+                        ? "bg-gray-600 text-gray-100"
                         : "bg-gray-100 text-gray-900"
                       : theme === "dark"
-                        ? "text-gray-500 hover:text-gray-300"
+                        ? "text-gray-400 hover:text-gray-200"
                         : "text-gray-500 hover:text-gray-700"
                   } disabled:opacity-50`}
                 >
-                  🎭 Debate
+                  Debate
                 </button>
                 <button
                   onClick={() => setMode("discussion")}
@@ -1074,14 +1069,14 @@ export default function App() {
                   className={`flex-1 px-3 py-1.5 rounded-md text-sm font-medium transition ${
                     mode === "discussion"
                       ? theme === "dark"
-                        ? "bg-gray-800 text-gray-100"
+                        ? "bg-gray-600 text-gray-100"
                         : "bg-gray-100 text-gray-900"
                       : theme === "dark"
-                        ? "text-gray-500 hover:text-gray-300"
+                        ? "text-gray-400 hover:text-gray-200"
                         : "text-gray-500 hover:text-gray-700"
                   } disabled:opacity-50`}
                 >
-                  💬 Discussion
+                  Discussion
                 </button>
               </div>
               <div className="flex items-center gap-2 p-4">
@@ -1105,8 +1100,8 @@ export default function App() {
                   }}
                   placeholder={
                     mode === "debate"
-                      ? "Enter a debate topic..."
-                      : "Enter a discussion topic..."
+                      ? "Enter debate topic..."
+                      : "Enter discussion topic..."
                   }
                   className={`flex-1 px-2 py-2 resize-none focus:outline-none bg-transparent ${
                     theme === "dark" ? "text-gray-200" : "text-gray-800"
