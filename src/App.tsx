@@ -77,8 +77,10 @@ export default function App() {
     }
   }
 
-  // Debug log whenever advancedMode changes
-  console.log('🎭 DEBATE APP STATE:', { mode, advancedMode, singleModel, affModel, negModel, user: user?.uid })
+  // Debug log whenever advancedMode changes (disabled to prevent spam)
+  // useEffect(() => {
+  //   console.log('🎭 DEBATE APP STATE:', { mode, advancedMode, singleModel, affModel, negModel, user: user?.uid })
+  // }, [mode, advancedMode, singleModel, affModel, negModel, user])
 
   const stopDebate = () => {
     console.log('🛑 Stopping debate/discussion')
