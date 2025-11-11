@@ -29,7 +29,6 @@ export default function App() {
     user,
     loading: authLoading,
     available: authAvailable,
-    signInWithGoogle,
     signOut,
   } = useAuth();
   const [mode, setMode] = useState<Mode>("debate");
