@@ -147,6 +147,8 @@ export default function App() {
     setProgressStatus("Connecting to server...");
     setStreamingMessages([]);
     setStreamingDiscussionMessages([]);
+    setStreamingMessageTexts({}); // Clear any leftover streaming texts
+    setMessageReactions({}); // Clear reactions from previous debate
 
     if (mode === "discussion") {
       runDiscussionMode(userTopic);
@@ -172,9 +174,20 @@ export default function App() {
 
     try {
       // First make POST request to initiate the debate
-      console.log("Sending debate request", { finalAffModel, finalNegModel });
+      console.log("🎭 Sending debate request", {
+        finalAffModel,
+        finalNegModel,
+      });
       const API_BASE =
         import.meta.env.VITE_API_BASE_URL || "http://localhost:5050";
+
+      // Add abort controller with timeout
+      const abortController = new AbortController();
+      const timeout = setTimeout(() => {
+        console.error("❌ Request timeout - aborting");
+        abortController.abort();
+      }, 180000); // 3 minutes timeout
+
       const response = await fetch(`${API_BASE}/run-debate-stream`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -185,7 +198,11 @@ export default function App() {
           rounds: rounds,
           temperature: temperature,
         }),
+        signal: abortController.signal,
       });
+
+      clearTimeout(timeout); // Clear timeout on successful connection
+      console.log("✅ Connected to debate stream");
 
       if (!response.ok) {
         throw new Error("Failed to start debate");
@@ -200,11 +217,18 @@ export default function App() {
 
       let buffer = "";
       let currentEvent = "";
+      let lastActivityTime = Date.now();
+      const INACTIVITY_TIMEOUT = 120000; // 2 minutes of no data = problem
 
       while (true) {
         const { done, value } = await reader.read();
 
-        if (done) break;
+        if (done) {
+          console.log("📭 Stream ended");
+          break;
+        }
+
+        lastActivityTime = Date.now(); // Update activity time
 
         buffer += decoder.decode(value, { stream: true });
         const lines = buffer.split("\n");
@@ -213,12 +237,14 @@ export default function App() {
         for (const line of lines) {
           if (line.startsWith("event:")) {
             currentEvent = line.substring(6).trim();
+            console.log("📨 Event:", currentEvent);
           } else if (line.startsWith("data:")) {
             if (currentEvent) {
               try {
                 const data = JSON.parse(line.substring(5).trim());
 
                 if (currentEvent === "progress") {
+                  console.log("📊 Progress:", data.status);
                   setProgressStatus(data.status);
                 } else if (currentEvent === "chunk") {
                   // Append chunk to the streaming message
@@ -229,6 +255,11 @@ export default function App() {
                   }));
                 } else if (currentEvent === "message") {
                   const incoming = data as Message;
+                  console.log(
+                    "💬 Message received:",
+                    incoming.role,
+                    incoming.round,
+                  );
                   setStreamingMessages((prev) => [...prev, incoming]);
                   // Clear the streaming text for this message
                   setStreamingMessageTexts((prev) => {
@@ -237,6 +268,7 @@ export default function App() {
                     return newTexts;
                   });
                 } else if (currentEvent === "complete") {
+                  console.log("🎉 Debate complete!");
                   const completeResult = { ...data, rounds, temperature };
                   setResult(completeResult);
                   setProgressStatus("Debate complete!");
@@ -245,18 +277,33 @@ export default function App() {
                   // Auto-save debate
                   saveDebate("debate", completeResult);
                 } else if (currentEvent === "error") {
+                  console.error("❌ Server error:", data.message);
                   throw new Error(data.message);
                 }
                 currentEvent = "";
               } catch (parseErr) {
-                console.error("Failed to parse SSE data:", parseErr);
+                console.error("❌ Failed to parse SSE data:", parseErr, line);
               }
             }
           }
         }
+
+        // Check for inactivity timeout
+        if (Date.now() - lastActivityTime > INACTIVITY_TIMEOUT) {
+          console.error("❌ Stream inactive for too long");
+          throw new Error("Connection timeout - no data received");
+        }
       }
+
+      console.log("✅ Debate stream processing complete");
     } catch (err: any) {
+      console.error("❌ Debate error:", err);
       let errorMsg = err.message || "Something went wrong";
+
+      // Handle abort errors
+      if (err.name === "AbortError") {
+        errorMsg = "⏱️ Request timed out. Please try again.";
+      }
 
       // Check for common API errors
       if (
@@ -288,18 +335,33 @@ export default function App() {
 
       setError(errorMsg);
       setLoading(false);
+      setStreamingMessageTexts({}); // Clear streaming texts on error
+      setProgressStatus(""); // Clear progress status
     }
   };
 
   const runDiscussionMode = async (userTopic: string) => {
     try {
+      console.log("💭 Starting discussion mode");
       const API_BASE =
         import.meta.env.VITE_API_BASE_URL || "http://localhost:5050";
+
+      // Add abort controller with timeout
+      const abortController = new AbortController();
+      const timeout = setTimeout(() => {
+        console.error("❌ Discussion timeout - aborting");
+        abortController.abort();
+      }, 180000); // 3 minutes timeout
+
       const response = await fetch(`${API_BASE}/run-discussion-stream`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ topic: userTopic }),
+        signal: abortController.signal,
       });
+
+      clearTimeout(timeout);
+      console.log("✅ Connected to discussion stream");
 
       if (!response.ok) {
         throw new Error("Failed to start discussion");
@@ -314,11 +376,18 @@ export default function App() {
 
       let buffer = "";
       let currentEvent = "";
+      let lastActivityTime = Date.now();
+      const INACTIVITY_TIMEOUT = 120000; // 2 minutes
 
       while (true) {
         const { done, value } = await reader.read();
 
-        if (done) break;
+        if (done) {
+          console.log("📭 Discussion stream ended");
+          break;
+        }
+
+        lastActivityTime = Date.now();
 
         buffer += decoder.decode(value, { stream: true });
         const lines = buffer.split("\n");
@@ -327,12 +396,14 @@ export default function App() {
         for (const line of lines) {
           if (line.startsWith("event:")) {
             currentEvent = line.substring(6).trim();
+            console.log("📨 Discussion event:", currentEvent);
           } else if (line.startsWith("data:")) {
             if (currentEvent) {
               try {
                 const data = JSON.parse(line.substring(5).trim());
 
                 if (currentEvent === "progress") {
+                  console.log("📊 Discussion progress:", data.status);
                   setProgressStatus(data.status);
                 } else if (currentEvent === "chunk") {
                   // Append chunk to the streaming message
@@ -343,6 +414,7 @@ export default function App() {
                   }));
                 } else if (currentEvent === "message") {
                   const incoming = data as DiscussionMessage;
+                  console.log("💬 Discussion message from:", incoming.model);
                   setStreamingDiscussionMessages((prev) => [...prev, incoming]);
                   // Clear the streaming text for this message
                   setStreamingMessageTexts((prev) => {
@@ -351,6 +423,7 @@ export default function App() {
                     return newTexts;
                   });
                 } else if (currentEvent === "complete") {
+                  console.log("🎉 Discussion complete!");
                   setDiscussionResult(data);
                   setProgressStatus("Discussion complete!");
                   setLoading(false);
@@ -358,18 +431,36 @@ export default function App() {
                   // Auto-save discussion
                   saveDebate("discussion", data);
                 } else if (currentEvent === "error") {
+                  console.error("❌ Discussion error:", data.message);
                   throw new Error(data.message);
                 }
                 currentEvent = "";
               } catch (parseErr) {
-                console.error("Failed to parse SSE data:", parseErr);
+                console.error(
+                  "❌ Failed to parse discussion SSE data:",
+                  parseErr,
+                );
               }
             }
           }
         }
+
+        // Check for inactivity timeout
+        if (Date.now() - lastActivityTime > INACTIVITY_TIMEOUT) {
+          console.error("❌ Discussion stream inactive for too long");
+          throw new Error("Connection timeout - no data received");
+        }
       }
+
+      console.log("✅ Discussion stream processing complete");
     } catch (err: any) {
+      console.error("❌ Discussion error:", err);
       let errorMsg = err.message || "Something went wrong";
+
+      // Handle abort errors
+      if (err.name === "AbortError") {
+        errorMsg = "⏱️ Request timed out. Please try again.";
+      }
 
       // Check for common API errors
       if (
@@ -401,6 +492,8 @@ export default function App() {
 
       setError(errorMsg);
       setLoading(false);
+      setStreamingMessageTexts({}); // Clear streaming texts on error
+      setProgressStatus(""); // Clear progress status
     }
   };
 
