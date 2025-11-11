@@ -44,6 +44,7 @@
     "src/auth/**/*",
     "src/assets/**/*",
     "src/tests/**/*",
+    "src/lib/firebase.ts",
     "**/*.config.js",
     "**/*.config.ts"
   ]
