@@ -8,7 +8,7 @@ type Props = {
 export default function MessageWithReactions({ message, theme }: Props) {
   // Map API model names to display names
   const modelDisplayNames: Record<string, string> = {
-    'gpt-4o': 'GPT-5',
+    'gpt-5': 'GPT-5',
     'openai': 'GPT-5',
     'anthropic': 'Claude 4.5',
     'gemini': 'Gemini 2.5',

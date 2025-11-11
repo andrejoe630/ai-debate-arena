@@ -7,7 +7,7 @@ const openai = new OpenAI({
 
 export async function askOpenAI(prompt: string): Promise<string> {
   const completion = await openai.chat.completions.create({
-    model: "gpt-4o",
+    model: "gpt-5",
     messages: [{ role: "user", content: prompt }],
   });
 
@@ -18,7 +18,7 @@ export async function askOpenAI(prompt: string): Promise<string> {
 
 export async function* askOpenAIStream(prompt: string): AsyncGenerator<string> {
   const stream = await openai.chat.completions.create({
-    model: "gpt-4o",
+    model: "gpt-5",
     messages: [{ role: "user", content: prompt }],
     stream: true,
   });

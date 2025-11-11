@@ -999,10 +999,11 @@ export default function App() {
                             anthropic: "bg-orange-500",
                             gemini: "bg-green-500",
                           };
-                          const modelNames = {
-                            openai: "ChatGPT-5",
-                            anthropic: "Claude 4.5",
-                            gemini: "Gemini 2.5",
+                          const modelDisplayNames: Record<string, string> = {
+                            'gpt-5': 'GPT-5',
+                            'openai': 'GPT-5',
+                            'anthropic': 'Claude 4.5',
+                            'gemini': 'Gemini 2.5',
                           };
                           return (
                             <div key={idx} className="animate-fadeIn">
@@ -1022,7 +1023,7 @@ export default function App() {
                                 <div className="flex-1 space-y-2">
                                   <div className="flex items-baseline gap-2">
                                     <span className="font-semibold text-gray-900">
-                                      {modelNames[msg.model]}
+                                      {modelDisplayNames[msg.model]}
                                     </span>
                                     <span className="text-xs text-gray-500">
                                       Message #{msg.messageNumber}
