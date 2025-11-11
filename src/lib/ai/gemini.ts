@@ -4,11 +4,11 @@ import { ENV } from "../config/env.js";
 
 /**
  * Ask Gemini with an optional model override.
- * Default model: gemini-1.5-pro-latest
+ * Default model: gemini-2.0-flash-exp
  */
 export async function askGemini(
   prompt: string,
-  modelId: string = "gemini-1.5-pro-latest",
+  modelId: string = "gemini-2.0-flash-exp",
 ): Promise<string> {
   if (!ENV.GOOGLE_API_KEY) {
     throw new Error("GOOGLE_API_KEY is missing in your environment (.env).");
@@ -38,7 +38,7 @@ export async function askGemini(
 
 export async function* askGeminiStream(
   prompt: string,
-  modelId: string = "gemini-1.5-pro-latest",
+  modelId: string = "gemini-2.0-flash-exp",
 ): AsyncGenerator<string> {
   if (!ENV.GOOGLE_API_KEY) {
     throw new Error("GOOGLE_API_KEY is missing in your environment (.env).");

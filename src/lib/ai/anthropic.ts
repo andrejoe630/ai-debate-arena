@@ -15,7 +15,7 @@ export async function askClaude(
 
   const client = new Anthropic({ apiKey: ENV.ANTHROPIC_API_KEY });
 
-  const modelName = model ?? "claude-3-5-sonnet-20240620";
+  const modelName = model ?? "claude-sonnet-4-20250514";
 
   const res = await client.messages.create({
     model: modelName,
@@ -45,7 +45,7 @@ export async function* askClaudeStream(
   }
 
   const client = new Anthropic({ apiKey: ENV.ANTHROPIC_API_KEY });
-  const modelName = model ?? "claude-3-5-sonnet-20240620";
+  const modelName = model ?? "claude-sonnet-4-20250514";
 
   const stream = await client.messages.stream({
     model: modelName,
