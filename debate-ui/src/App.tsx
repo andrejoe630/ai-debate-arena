@@ -141,20 +141,16 @@ export default function App() {
   };
 
   // Debug log whenever advancedMode changes (disabled to prevent spam)
-</thinking>
-
-<old_text line=1296>
-                <button
-                  onClick={() => setMode("debate")}
-                  disabled={loading}
-  // console.log("🎭 DEBATE APP STATE:", {
-  //   mode,
-  //   advancedMode,
-  //   singleModel,
-  //   affModel,
-  //   negModel,
-  //   user: user?.uid,
-  // });
+  // useEffect(() => {
+  //   console.log("🎭 DEBATE APP STATE:", {
+  //     mode,
+  //     advancedMode,
+  //     singleModel,
+  //     affModel,
+  //     negModel,
+  //     user: user?.uid,
+  //   });
+  // }, [mode, advancedMode, singleModel, affModel, negModel, user]);
 
   const stopDebate = () => {
     console.log("🛑 Stopping debate/discussion");
