@@ -1,6 +1,6 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "installCommand": "npm ci",
+  "buildCommand": "cd debate-ui && npm ci && npm run build",
+  "outputDirectory": "debate-ui/dist",
+  "installCommand": "npm ci --prefix debate-ui",
   "framework": "vite"
 }
