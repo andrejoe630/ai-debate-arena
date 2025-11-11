@@ -15,11 +15,11 @@ export async function askClaude(
 
   const client = new Anthropic({ apiKey: ENV.ANTHROPIC_API_KEY });
 
-  const modelName = model ?? "claude-3-5-sonnet-20241022";
+  const modelName = model ?? "claude-sonnet-4-5-20250929";
 
   const res = await client.messages.create({
     model: modelName,
-    max_tokens: 1024,
+    max_tokens: 4096,
     messages: [{ role: "user", content: prompt }],
   });
 
@@ -45,11 +45,11 @@ export async function* askClaudeStream(
   }
 
   const client = new Anthropic({ apiKey: ENV.ANTHROPIC_API_KEY });
-  const modelName = model ?? "claude-3-5-sonnet-20241022";
+  const modelName = model ?? "claude-sonnet-4-5-20250929";
 
   const stream = await client.messages.stream({
     model: modelName,
-    max_tokens: 1024,
+    max_tokens: 4096,
     messages: [{ role: "user", content: prompt }],
   });
 

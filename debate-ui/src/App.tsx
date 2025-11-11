@@ -1000,9 +1000,9 @@ export default function App() {
                             gemini: "bg-green-500",
                           };
                           const modelNames = {
-                            openai: "GPT-4o",
-                            anthropic: "Claude 3.5",
-                            gemini: "Gemini 1.5",
+                            openai: "ChatGPT-5",
+                            anthropic: "Claude 4.5",
+                            gemini: "Gemini 2.5",
                           };
                           return (
                             <div key={idx} className="animate-fadeIn">
@@ -1198,9 +1198,9 @@ export default function App() {
                           <div className="grid gap-4 md:grid-cols-3">
                             {discussionResult.verdicts.map((v) => {
                               const getBestStanceLabel = (stance: string) => {
-                                if (stance === "openai") return "🔵 GPT-4o";
-                                if (stance === "anthropic") return "🟠 Claude 3.5";
-                                if (stance === "gemini") return "🟢 Gemini 1.5";
+                                if (stance === "openai") return "🔵 GPT-5";
+                                if (stance === "anthropic") return "🟠 Claude";
+                                if (stance === "gemini") return "🟢 Gemini";
                                 return "TIE";
                               };
                               return (
@@ -1364,7 +1364,7 @@ export default function App() {
                 )}
                 {mode === "discussion" && (
                   <div className="text-xs text-gray-500 text-center">
-                    GPT-4o · Claude 3.5 · Gemini 1.5
+                    GPT-5 · Claude · Gemini
                   </div>
                 )}
               </div>
@@ -1471,7 +1471,7 @@ export default function App() {
                   )}
                   {mode === "discussion" && (
                     <span className="hidden lg:inline text-xs text-gray-500 px-2">
-                      GPT-4o · Claude 3.5 · Gemini 1.5
+                      GPT-5 · Claude · Gemini
                     </span>
                   )}
                   {/* Stop button when loading */}

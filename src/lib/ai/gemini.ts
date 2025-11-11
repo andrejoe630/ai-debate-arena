@@ -4,18 +4,24 @@ import { ENV } from "../config/env.js";
 
 /**
  * Ask Gemini with an optional model override.
- * Default model: gemini-1.5-pro
+ * Default model: models/gemini-2.5-pro
  */
 export async function askGemini(
   prompt: string,
-  modelId: string = "gemini-1.5-pro",
+  modelId: string = "models/gemini-2.5-pro",
 ): Promise<string> {
   if (!ENV.GOOGLE_API_KEY) {
     throw new Error("GOOGLE_API_KEY is missing in your environment (.env).");
   }
 
   const genAI = new GoogleGenerativeAI(ENV.GOOGLE_API_KEY);
-  const model = genAI.getGenerativeModel({ model: modelId });
+  const model = genAI.getGenerativeModel({ 
+    model: modelId,
+    generationConfig: {
+      maxOutputTokens: 4096,
+      temperature: 0.7,
+    }
+  });
 
   const res = await model.generateContent({
     contents: [{ role: "user", parts: [{ text: prompt }] }],
@@ -32,14 +38,20 @@ export async function askGemini(
 
 export async function* askGeminiStream(
   prompt: string,
-  modelId: string = "gemini-1.5-pro",
+  modelId: string = "models/gemini-2.5-pro",
 ): AsyncGenerator<string> {
   if (!ENV.GOOGLE_API_KEY) {
     throw new Error("GOOGLE_API_KEY is missing in your environment (.env).");
   }
 
   const genAI = new GoogleGenerativeAI(ENV.GOOGLE_API_KEY);
-  const model = genAI.getGenerativeModel({ model: modelId });
+  const model = genAI.getGenerativeModel({ 
+    model: modelId,
+    generationConfig: {
+      maxOutputTokens: 4096,
+      temperature: 0.7,
+    }
+  });
 
   const result = await model.generateContentStream({
     contents: [{ role: "user", parts: [{ text: prompt }] }],
