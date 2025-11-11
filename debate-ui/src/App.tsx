@@ -7,7 +7,6 @@ import type {
   DiscussionResult,
   Mode,
   SavedDebate,
-  MessageReactions,
 } from "./types";
 import {
   saveDebate,
@@ -61,9 +60,6 @@ export default function App() {
   const [showSignIn, setShowSignIn] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [messageReactions, setMessageReactions] = useState<
-    Record<number, MessageReactions>
-  >({});
   // Rebuttal mode - coming soon
   // const [rebuttalMode, setRebuttalMode] = useState(false)
   // const [rebuttalTarget, setRebuttalTarget] = useState<'affirmative' | 'negative' | null>(null)
@@ -78,24 +74,6 @@ export default function App() {
     setThemeState((prev) => (prev === "light" ? "dark" : "light"));
   };
 
-  const handleReaction = (
-    msgIndex: number,
-    reaction: keyof MessageReactions,
-  ) => {
-    setMessageReactions((prev) => {
-      const currentValue = prev[msgIndex]?.[reaction] || 0;
-      return {
-        ...prev,
-        [msgIndex]: {
-          fire: prev[msgIndex]?.fire || 0,
-          thinking: prev[msgIndex]?.thinking || 0,
-          clap: prev[msgIndex]?.clap || 0,
-          [reaction]: currentValue === 0 ? 1 : 0,
-        },
-      };
-    });
-  };
-
   const handleLoadDebate = (savedDebate: SavedDebate) => {
     setShowHistory(false);
 
@@ -106,7 +84,6 @@ export default function App() {
     setStreamingMessages([]);
     setStreamingDiscussionMessages([]);
     setStreamingMessageTexts({});
-    setMessageReactions({});
 
     if (savedDebate.mode === "debate" && savedDebate.debateResult) {
       setMode("debate");
@@ -134,7 +111,6 @@ export default function App() {
     setStreamingMessages([]);
     setStreamingDiscussionMessages([]);
     setStreamingMessageTexts({});
-    setMessageReactions({});
     setCurrentTopic("");
     setError(null);
     setProgressStatus("");
@@ -176,7 +152,6 @@ export default function App() {
     setStreamingMessages([]);
     setStreamingDiscussionMessages([]);
     setStreamingMessageTexts({}); // Clear any leftover streaming texts
-    setMessageReactions({}); // Clear reactions from previous debate
 
     if (mode === "discussion") {
       runDiscussionMode(userTopic);
@@ -1026,9 +1001,6 @@ export default function App() {
                             <MessageWithReactions
                               key={idx}
                               message={msg}
-                              index={idx}
-                              reactions={messageReactions[idx]}
-                              onReact={handleReaction}
                               theme={theme}
                             />
                           ),
@@ -1055,11 +1027,6 @@ export default function App() {
                                     Math.floor(streamingMessages.length / 2) +
                                     1,
                                 }}
-                                index={streamingMessages.length}
-                                reactions={
-                                  messageReactions[streamingMessages.length]
-                                }
-                                onReact={handleReaction}
                                 theme={theme}
                               />
                             </div>

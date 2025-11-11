@@ -41,3 +41,4 @@ dist-ssr
 *.sln
 *.sw?
 >>>>>>> f4ae72d1ee69cf46e81e602fd948f63b6cbdb255
+.vercel

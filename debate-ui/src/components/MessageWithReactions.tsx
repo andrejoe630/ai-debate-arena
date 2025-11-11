@@ -1,19 +1,11 @@
-import type { Message, MessageReactions } from '../types'
+import type { Message } from '../types'
 
 type Props = {
   message: Message
-  index: number
-  reactions: MessageReactions | undefined
-  onReact: (index: number, reaction: keyof MessageReactions) => void
   theme: 'light' | 'dark'
 }
 
-export default function MessageWithReactions({ message, index, reactions, onReact, theme }: Props) {
-  const reactionEmojis: Array<{ key: keyof MessageReactions, emoji: string }> = [
-    { key: 'fire', emoji: '🔥' },
-    { key: 'thinking', emoji: '🤔' },
-    { key: 'clap', emoji: '👏' }
-  ]
+export default function MessageWithReactions({ message, theme }: Props) {
 
   return (
     <div className="animate-fadeIn">
@@ -47,27 +39,6 @@ export default function MessageWithReactions({ message, index, reactions, onReac
             theme === 'dark' ? 'text-gray-300' : 'text-gray-800'
           }`}>
             {message.text}
-          </div>
-          
-          {/* Reactions */}
-          <div className="flex gap-2 pt-2">
-            {reactionEmojis.map(({ key, emoji }) => (
-              <button
-                key={key}
-                onClick={() => onReact(index, key)}
-                className={`px-2 py-1 rounded-lg text-sm transition ${
-                  reactions?.[key]
-                    ? theme === 'dark'
-                      ? 'bg-orange-900/30 border border-orange-700'
-                      : 'bg-orange-50 border border-orange-200'
-                    : theme === 'dark'
-                    ? 'bg-gray-800 border border-gray-700 hover:bg-gray-750'
-                    : 'bg-gray-50 border border-gray-200 hover:bg-gray-100'
-                }`}
-              >
-                {emoji} {reactions?.[key] || ''}
-              </button>
-            ))}
           </div>
         </div>
       </div>
