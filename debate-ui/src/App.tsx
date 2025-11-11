@@ -551,17 +551,17 @@ export default function App() {
           : "bg-[#f7f3f0] text-gray-900"
       }`}
     >
-      {/* Mobile Overlay */}
-      {mobileMenuOpen && (
+      {/* Mobile Overlay - only show when sidebar is open but history/modals are not */}
+      {mobileMenuOpen && !showHistory && !showStats && !showTopics && !showSettings && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
 
       {/* Left Sidebar */}
       <div
-        className={`flex-shrink-0 flex flex-col border-r transition-all duration-300 z-50 ${
+        className={`flex-shrink-0 flex flex-col border-r transition-all duration-300 z-40 ${
           sidebarCollapsed ? "w-16" : "w-64"
         } ${
           theme === "dark"

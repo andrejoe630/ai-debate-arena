@@ -260,22 +260,36 @@ Return ONLY a JSON object with:
     const parseWinner = (
       raw: string,
     ): { winner: string; reasoning: string } => {
-      // Find JSON object in the response (non-greedy to avoid including text after JSON)
-      const match = raw.match(/\{[\s\S]*?\}/);
-      if (!match) {
-        return { winner: "tie", reasoning: raw.trim().slice(0, 600) };
+      // Try to find and parse JSON object
+      const jsonMatch = raw.match(/\{[\s\S]*?\}/);
+      if (jsonMatch) {
+        try {
+          const obj = JSON.parse(jsonMatch[0]);
+          const reasoning = obj.reasoning ? obj.reasoning.trim() : "";
+          if (reasoning) {
+            return {
+              winner: obj.winner || "tie",
+              reasoning: reasoning,
+            };
+          }
+        } catch (e) {
+          console.error("JSON parse error:", e, "Raw:", raw.slice(0, 200));
+        }
       }
-      try {
-        const obj = JSON.parse(match[0]);
-        return {
-          winner: obj.winner || "tie",
-          // Only return the reasoning from JSON, trimmed
-          reasoning: obj.reasoning ? obj.reasoning.trim() : "",
-        };
-      } catch {
-        // If JSON parsing fails, return tie with error message
-        return { winner: "tie", reasoning: "Unable to parse judge decision" };
+      
+      // Fallback: extract from raw text
+      const lowerRaw = raw.toLowerCase();
+      let winner = "tie";
+      
+      if (lowerRaw.includes("openai") || lowerRaw.includes("gpt")) {
+        winner = "openai";
+      } else if (lowerRaw.includes("anthropic") || lowerRaw.includes("claude")) {
+        winner = "anthropic";
+      } else if (lowerRaw.includes("gemini")) {
+        winner = "gemini";
       }
+      
+      return { winner, reasoning: raw.trim().slice(0, 600) };
     };
 
     const oaiJudge = parseWinner(oaiRaw);

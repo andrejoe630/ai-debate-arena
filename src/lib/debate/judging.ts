@@ -30,23 +30,34 @@ Return ONLY a JSON object with:
 }`;
 
 function parseWinner(raw: string): { winner: "affirmative" | "negative" | "tie"; reasoning: string } {
-  // Find JSON object in the response (non-greedy to avoid including text after JSON)
-  const match = raw.match(/\{[\s\S]*?\}/);
-  if (!match) {
-    return { winner: "tie", reasoning: raw.trim().slice(0, 600) };
+  // Try to find and parse JSON object - be more flexible with whitespace
+  const jsonMatch = raw.match(/\{[\s\S]*?\}/);
+  if (jsonMatch) {
+    try {
+      const obj = JSON.parse(jsonMatch[0]);
+      const w = obj.winner === "affirmative" || obj.winner === "negative" || obj.winner === "tie"
+        ? obj.winner
+        : "tie";
+      const r = typeof obj.reasoning === "string" ? obj.reasoning.trim() : "";
+      if (r) {
+        return { winner: w, reasoning: r };
+      }
+    } catch (e) {
+      console.error("JSON parse error:", e, "Raw:", raw.slice(0, 200));
+    }
   }
-  try {
-    const obj = JSON.parse(match[0]);
-    const w = obj.winner === "affirmative" || obj.winner === "negative" || obj.winner === "tie"
-      ? obj.winner
-      : "tie";
-    // Only return the reasoning from JSON, trimmed
-    const r = typeof obj.reasoning === "string" ? obj.reasoning.trim() : "";
-    return { winner: w, reasoning: r };
-  } catch {
-    // If JSON parsing fails, return tie with error message
-    return { winner: "tie", reasoning: "Unable to parse judge decision" };
+  
+  // Fallback: try to extract structured info from raw text
+  const lowerRaw = raw.toLowerCase();
+  let winner: "affirmative" | "negative" | "tie" = "tie";
+  
+  if (lowerRaw.includes("affirmative") && lowerRaw.includes("win")) {
+    winner = "affirmative";
+  } else if (lowerRaw.includes("negative") && lowerRaw.includes("win")) {
+    winner = "negative";
   }
+  
+  return { winner, reasoning: raw.trim().slice(0, 600) };
 }
 
 export async function runJudges(input: {
