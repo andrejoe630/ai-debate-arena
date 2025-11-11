@@ -451,7 +451,14 @@ export default function App() {
             <h1 className="text-lg font-semibold">🎭 AI Arena</h1>
           )}
           <button
-            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            onClick={() => {
+              // On mobile, close the menu; on desktop, toggle collapse
+              if (mobileMenuOpen) {
+                setMobileMenuOpen(false);
+              } else {
+                setSidebarCollapsed(!sidebarCollapsed);
+              }
+            }}
             className={`p-1.5 rounded-md transition ${
               theme === "dark"
                 ? "hover:bg-gray-800 text-gray-400"
