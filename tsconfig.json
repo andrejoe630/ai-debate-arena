@@ -13,15 +13,38 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "types": ["node"]
   },
-  "include": ["src/**/*"],
+  "include": [
+    "src/server.ts",
+    "src/lib/**/*",
+    "src/config.ts",
+    "src/list-anthropic-models.ts"
+  ],
   "exclude": [
     "node_modules",
     "dist",
     "debate-ui",
     "public",
-    "*.config.js",
-    "*.config.ts"
+    "src/App.tsx",
+    "src/App.css",
+    "src/App.js",
+    "src/App.js.map",
+    "src/App.tsx.backup",
+    "src/main.tsx",
+    "src/main.js",
+    "src/main.js.map",
+    "src/index.css",
+    "src/topics.ts",
+    "src/types.ts",
+    "src/utils.ts",
+    "src/judging.types.ts",
+    "src/components/**/*",
+    "src/auth/**/*",
+    "src/assets/**/*",
+    "src/tests/**/*",
+    "**/*.config.js",
+    "**/*.config.ts"
   ]
 }
