@@ -1076,6 +1076,79 @@ export default function App() {
                   Discussion
                 </button>
               </div>
+
+              {/* Mobile model selectors - shown above input on mobile only */}
+              <div className="lg:hidden px-4 pt-3 pb-2 border-b border-gray-200 dark:border-gray-600">
+                {mode === "debate" && !advancedMode && (
+                  <div className="flex items-center gap-2 justify-center">
+                    <select
+                      value={singleModel}
+                      onChange={(e) =>
+                        setSingleModel(e.target.value as ModelKey)
+                      }
+                      className="text-xs px-2 py-1 border border-gray-200 rounded-md focus:outline-none focus:border-gray-400 text-gray-600 bg-white"
+                      disabled={loading}
+                    >
+                      <option value="openai">OpenAI</option>
+                      <option value="anthropic">Claude</option>
+                      <option value="gemini">Gemini</option>
+                    </select>
+                    <button
+                      onClick={() => {
+                        console.log("Switching to advanced mode");
+                        setAdvancedMode(true);
+                      }}
+                      disabled={loading}
+                      className="text-xs px-3 py-1.5 border border-gray-300 bg-gray-50 text-gray-700 rounded-md hover:bg-gray-200 transition disabled:opacity-50 font-medium"
+                      title="Pick different models for each side"
+                    >
+                      vs
+                    </button>
+                  </div>
+                )}
+                {mode === "debate" && advancedMode && (
+                  <div className="flex items-center gap-2 justify-center">
+                    <select
+                      value={affModel}
+                      onChange={(e) => setAffModel(e.target.value as ModelKey)}
+                      className="text-xs px-2 py-1 border border-gray-200 rounded-md focus:outline-none focus:border-gray-400 text-gray-600 bg-white"
+                      disabled={loading}
+                    >
+                      <option value="openai">OpenAI</option>
+                      <option value="anthropic">Claude</option>
+                      <option value="gemini">Gemini</option>
+                    </select>
+                    <span className="text-xs text-gray-400">vs</span>
+                    <select
+                      value={negModel}
+                      onChange={(e) => setNegModel(e.target.value as ModelKey)}
+                      className="text-xs px-2 py-1 border border-gray-200 rounded-md focus:outline-none focus:border-gray-400 text-gray-600 bg-white"
+                      disabled={loading}
+                    >
+                      <option value="openai">OpenAI</option>
+                      <option value="anthropic">Claude</option>
+                      <option value="gemini">Gemini</option>
+                    </select>
+                    <button
+                      onClick={() => {
+                        console.log("Switching back to simple mode");
+                        setAdvancedMode(false);
+                      }}
+                      disabled={loading}
+                      className="text-xs px-3 py-1.5 border border-gray-300 bg-gray-50 text-gray-700 rounded-md hover:bg-gray-200 transition disabled:opacity-50 font-medium"
+                      title="Back to simple mode"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
+                {mode === "discussion" && (
+                  <div className="text-xs text-gray-500 text-center">
+                    GPT-5 · Claude · Gemini
+                  </div>
+                )}
+              </div>
+
               <div className="flex items-center gap-2 p-4">
                 <textarea
                   value={topic}
