@@ -767,11 +767,8 @@ export default function App() {
                   streamingMessages.length === 0 &&
                   streamingDiscussionMessages.length === 0 && (
                     <div className="flex-1 flex items-center justify-center px-4">
-                      >
-                        <div className="text-center">
-                          <div className="text-7xl mb-6">
-                            🎭
-                          </div>
+                      <div className="text-center">
+                        <div className="text-7xl mb-6">🎭</div>
                         <h1
                           className={`text-5xl font-serif mb-3 ${
                             theme === "dark" ? "text-gray-100" : "text-gray-900"
