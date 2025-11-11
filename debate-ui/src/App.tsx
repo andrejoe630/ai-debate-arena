@@ -545,7 +545,7 @@ export default function App() {
       {/* Mobile Overlay - only show when sidebar is open but history/modals are not */}
       {mobileMenuOpen && !showHistory && !showStats && !showTopics && !showSettings && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+          className="fixed inset-0 bg-black bg-opacity-20 z-30 lg:hidden"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
