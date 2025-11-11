@@ -19,17 +19,9 @@ import StatsModal from "./components/StatsModal";
 import TopicsBrowser from "./components/TopicsBrowser";
 import MessageWithReactions from "./components/MessageWithReactions";
 import InfoTooltip from "./components/InfoTooltip";
-import SignInPanel from "./components/SignInPanel";
-import { useAuth } from "./auth/AuthContext";
 
 export default function App() {
   const [theme, setThemeState] = useState<"light" | "dark">(getTheme());
-  const {
-    user,
-    loading: authLoading,
-    available: authAvailable,
-    signOut,
-  } = useAuth();
   const [mode, setMode] = useState<Mode>("debate");
   const [topic, setTopic] = useState("");
   const [currentTopic, setCurrentTopic] = useState(""); // Store the active topic for display
@@ -57,7 +49,6 @@ export default function App() {
   const [showStats, setShowStats] = useState(false);
   const [showTopics, setShowTopics] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [showSignIn, setShowSignIn] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   // Abort controller for stopping debates/discussions
@@ -760,38 +751,6 @@ export default function App() {
                 <span>{theme === "dark" ? "Dark" : "Light"} Mode</span>
               )}
             </button>
-
-            {/* Sign in/out */}
-            {authAvailable &&
-              (user ? (
-                <button
-                  onClick={signOut}
-                  className={`w-full px-3 py-2.5 rounded-md text-sm transition flex items-center ${
-                    sidebarCollapsed ? "justify-center" : "gap-3"
-                  } ${
-                    theme === "dark"
-                      ? "hover:bg-gray-600 text-gray-300 hover:text-gray-100"
-                      : "hover:bg-gray-100 text-gray-600 hover:text-gray-900"
-                  }`}
-                  title={sidebarCollapsed ? "Sign out" : ""}
-                >
-                  {!sidebarCollapsed && <span>Sign Out</span>}
-                </button>
-              ) : (
-                <button
-                  onClick={() => setShowSignIn(true)}
-                  className={`w-full px-3 py-2.5 rounded-md text-sm transition flex items-center ${
-                    sidebarCollapsed ? "justify-center" : "gap-3"
-                  } ${
-                    theme === "dark"
-                      ? "hover:bg-gray-600 text-gray-300 hover:text-gray-100"
-                      : "hover:bg-gray-100 text-gray-600 hover:text-gray-900"
-                  }`}
-                  title={sidebarCollapsed ? "Sign in" : ""}
-                >
-                  {!sidebarCollapsed && <span>Sign In</span>}
-                </button>
-              ))}
           </div>
         </div>
       </div>
@@ -908,14 +867,8 @@ export default function App() {
         {/* Scrollable content area */}
         <div className="flex-1 overflow-y-auto pb-56 md:pb-48">
           <div className="min-h-full flex flex-col">
-            {/* Optional auth gate */}
-            {import.meta.env.VITE_REQUIRE_AUTH === "true" &&
-            !authLoading &&
-            !user ? (
-              <SignInPanel theme={theme} />
-            ) : (
-              <>
-                {/* Welcome state - centered vertically */}
+            <>
+              {/* Welcome state - centered vertically */}
                 {!loading &&
                   !result &&
                   !discussionResult &&
@@ -1261,7 +1214,6 @@ export default function App() {
                   </div>
                 )}
               </>
-            )}
           </div>
         </div>
 
@@ -1578,34 +1530,6 @@ export default function App() {
         }}
         theme={theme}
       />
-
-      {/* Sign In Modal */}
-      {showSignIn && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="relative max-w-md w-full">
-            <button
-              onClick={() => setShowSignIn(false)}
-              className={`absolute -top-2 -right-2 p-2 rounded-full ${
-                theme === "dark"
-                  ? "bg-gray-800 hover:bg-gray-700"
-                  : "bg-white hover:bg-gray-100"
-              } shadow-lg`}
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-            </button>
-            <SignInPanel theme={theme} />
-          </div>
-        </div>
-      )}
     </div>
   );
 }
