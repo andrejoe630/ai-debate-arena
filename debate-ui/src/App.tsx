@@ -520,7 +520,10 @@ export default function App() {
           </button>
 
           <button
-            onClick={() => setShowSettings(!showSettings)}
+            onClick={() => {
+              setShowSettings(!showSettings);
+              setMobileMenuOpen(false);
+            }}
             className={`w-full px-3 py-2.5 rounded-md text-sm transition flex items-center ${
               sidebarCollapsed ? "justify-center" : "gap-3"
             } ${
