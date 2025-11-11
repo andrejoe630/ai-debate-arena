@@ -30,7 +30,8 @@ Return ONLY a JSON object with:
 }`;
 
 function parseWinner(raw: string): { winner: "affirmative" | "negative" | "tie"; reasoning: string } {
-  const match = raw.match(/\{[\s\S]*\}/);
+  // Find JSON object in the response (non-greedy to avoid including text after JSON)
+  const match = raw.match(/\{[\s\S]*?\}/);
   if (!match) {
     return { winner: "tie", reasoning: raw.trim().slice(0, 600) };
   }
@@ -39,10 +40,12 @@ function parseWinner(raw: string): { winner: "affirmative" | "negative" | "tie";
     const w = obj.winner === "affirmative" || obj.winner === "negative" || obj.winner === "tie"
       ? obj.winner
       : "tie";
-    const r = typeof obj.reasoning === "string" ? obj.reasoning : "";
+    // Only return the reasoning from JSON, trimmed
+    const r = typeof obj.reasoning === "string" ? obj.reasoning.trim() : "";
     return { winner: w, reasoning: r };
   } catch {
-    return { winner: "tie", reasoning: raw.trim().slice(0, 600) };
+    // If JSON parsing fails, return tie with error message
+    return { winner: "tie", reasoning: "Unable to parse judge decision" };
   }
 }
 

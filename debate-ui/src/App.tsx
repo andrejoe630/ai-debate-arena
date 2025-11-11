@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type {
   ModelKey,
   Message,
@@ -60,6 +60,8 @@ export default function App() {
   const [showSignIn, setShowSignIn] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  // Abort controller for stopping debates/discussions
+  const abortControllerRef = useRef<AbortController | null>(null);
   // Rebuttal mode - coming soon
   // const [rebuttalMode, setRebuttalMode] = useState(false)
   // const [rebuttalTarget, setRebuttalTarget] = useState<'affirmative' | 'negative' | null>(null)
@@ -130,6 +132,10 @@ export default function App() {
 
   const stopDebate = () => {
     console.log("🛑 Stopping debate/discussion");
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
     setLoading(false);
     setProgressStatus("Stopped by user");
   };
@@ -186,6 +192,7 @@ export default function App() {
 
       // Add abort controller with timeout
       const abortController = new AbortController();
+      abortControllerRef.current = abortController;
       const timeout = setTimeout(() => {
         console.error("❌ Request timeout - aborting");
         abortController.abort();
@@ -368,6 +375,7 @@ export default function App() {
 
       // Add abort controller with timeout
       const abortController = new AbortController();
+      abortControllerRef.current = abortController;
       const timeout = setTimeout(() => {
         console.error("❌ Discussion timeout - aborting");
         abortController.abort();
@@ -898,7 +906,7 @@ export default function App() {
         )}
 
         {/* Scrollable content area */}
-        <div className="flex-1 overflow-y-auto pb-40">
+        <div className="flex-1 overflow-y-auto pb-56 md:pb-48">
           <div className="min-h-full flex flex-col">
             {/* Optional auth gate */}
             {import.meta.env.VITE_REQUIRE_AUTH === "true" &&
@@ -1165,7 +1173,7 @@ export default function App() {
                     )}
 
                     {/* Judge verdicts - Debate mode */}
-                    {result && result.verdicts && (
+                    {mode === "debate" && result && result.verdicts && (
                       <div className="mt-12 pt-8 border-t border-gray-300">
                         <h3 className="text-lg font-semibold text-gray-900 mb-6 text-center">
                           Judge Verdicts
@@ -1206,7 +1214,8 @@ export default function App() {
                     )}
 
                     {/* Judge verdicts - Discussion mode */}
-                    {discussionResult?.verdicts &&
+                    {mode === "discussion" &&
+                      discussionResult?.verdicts &&
                       discussionResult.requiredJudging && (
                         <div className="mt-12 pt-8 border-t border-gray-300">
                           <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-center">

@@ -260,7 +260,8 @@ Return ONLY a JSON object with:
     const parseWinner = (
       raw: string,
     ): { winner: string; reasoning: string } => {
-      const match = raw.match(/\{[\s\S]*\}/);
+      // Find JSON object in the response (non-greedy to avoid including text after JSON)
+      const match = raw.match(/\{[\s\S]*?\}/);
       if (!match) {
         return { winner: "tie", reasoning: raw.trim().slice(0, 600) };
       }
@@ -268,10 +269,12 @@ Return ONLY a JSON object with:
         const obj = JSON.parse(match[0]);
         return {
           winner: obj.winner || "tie",
-          reasoning: obj.reasoning || "",
+          // Only return the reasoning from JSON, trimmed
+          reasoning: obj.reasoning ? obj.reasoning.trim() : "",
         };
       } catch {
-        return { winner: "tie", reasoning: raw.trim().slice(0, 600) };
+        // If JSON parsing fails, return tie with error message
+        return { winner: "tie", reasoning: "Unable to parse judge decision" };
       }
     };
 
