@@ -1,0 +1,31 @@
+// src/lib/ai/gemini.ts
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { ENV } from "../config/env.js";
+
+/**
+ * Ask Gemini with an optional model override.
+ * Default model: models/gemini-2.5-pro
+ */
+export async function askGemini(
+  prompt: string,
+  modelId: string = "models/gemini-2.5-pro"
+): Promise<string> {
+  if (!ENV.GOOGLE_API_KEY) {
+    throw new Error("GOOGLE_API_KEY is missing in your environment (.env).");
+  }
+
+  const genAI = new GoogleGenerativeAI(ENV.GOOGLE_API_KEY);
+  const model = genAI.getGenerativeModel({ model: modelId });
+
+  const res = await model.generateContent({
+    contents: [{ role: "user", parts: [{ text: prompt }] }],
+  });
+
+  // Prefer the stable helper, fall back for older responses
+  const text =
+    (res.response as any)?.text?.() ??
+    (res.response as any)?.candidates?.[0]?.content?.parts?.[0]?.text ??
+    "";
+
+  return String(text).trim();
+}

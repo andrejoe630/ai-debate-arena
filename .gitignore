@@ -1,0 +1,16 @@
+﻿# Dependencies
+node_modules/
+debate-ui/node_modules/
+
+# Build output
+dist/
+debate-ui/dist/
+
+# Env files
+.env
+debate-ui/.env
+
+# IDE / OS files
+.vscode/
+.DS_Store
+Thumbs.db
