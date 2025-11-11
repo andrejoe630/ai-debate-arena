@@ -79,15 +79,18 @@ export default function App() {
     msgIndex: number,
     reaction: keyof MessageReactions,
   ) => {
-    setMessageReactions((prev) => ({
-      ...prev,
-      [msgIndex]: {
-        fire: prev[msgIndex]?.fire || 0,
-        thinking: prev[msgIndex]?.thinking || 0,
-        clap: prev[msgIndex]?.clap || 0,
-        [reaction]: (prev[msgIndex]?.[reaction] || 0) + 1,
-      },
-    }));
+    setMessageReactions((prev) => {
+      const currentValue = prev[msgIndex]?.[reaction] || 0;
+      return {
+        ...prev,
+        [msgIndex]: {
+          fire: prev[msgIndex]?.fire || 0,
+          thinking: prev[msgIndex]?.thinking || 0,
+          clap: prev[msgIndex]?.clap || 0,
+          [reaction]: currentValue === 0 ? 1 : 0,
+        },
+      };
+    });
   };
 
   const handleLoadDebate = (savedDebate: SavedDebate) => {
