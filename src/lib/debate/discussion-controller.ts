@@ -260,13 +260,14 @@ Return ONLY a JSON object with:
     const parseWinner = (
       raw: string,
     ): { winner: string; reasoning: string } => {
-      // Try to find and parse JSON object
+      // Try to find and parse JSON object - extract ONLY the reasoning field
       const jsonMatch = raw.match(/\{[\s\S]*?\}/);
       if (jsonMatch) {
         try {
           const obj = JSON.parse(jsonMatch[0]);
           const reasoning = obj.reasoning ? obj.reasoning.trim() : "";
           if (reasoning) {
+            // Return ONLY the reasoning from JSON, ignore everything else
             return {
               winner: obj.winner || "tie",
               reasoning: reasoning,
@@ -277,19 +278,28 @@ Return ONLY a JSON object with:
         }
       }
       
-      // Fallback: extract from raw text
-      const lowerRaw = raw.toLowerCase();
-      let winner = "tie";
-      
-      if (lowerRaw.includes("openai") || lowerRaw.includes("gpt")) {
-        winner = "openai";
-      } else if (lowerRaw.includes("anthropic") || lowerRaw.includes("claude")) {
-        winner = "anthropic";
-      } else if (lowerRaw.includes("gemini")) {
-        winner = "gemini";
+      // Fallback: Extract reasoning from any text after "reasoning"
+      const reasoningMatch = raw.match(/["']?reasoning["']?\s*:\s*["']([^"']+)["']/);
+      if (reasoningMatch && reasoningMatch[1]) {
+        const lowerRaw = raw.toLowerCase();
+        const winner = lowerRaw.includes("openai") || lowerRaw.includes("gpt") ? "openai" :
+                       lowerRaw.includes("anthropic") || lowerRaw.includes("claude") ? "anthropic" :
+                       lowerRaw.includes("gemini") ? "gemini" : "tie";
+        return { winner, reasoning: reasoningMatch[1].trim() };
       }
       
-      return { winner, reasoning: raw.trim().slice(0, 600) };
+      // Last resort: strip JSON markers and return clean text
+      const cleaned = raw.replace(/```json/gi, '')
+                         .replace(/```/g, '')
+                         .replace(/\{[^}]*"winner"[^}]*\}/gi, '')
+                         .trim();
+      
+      const lowerCleaned = cleaned.toLowerCase();
+      const winner = lowerCleaned.includes("openai") || lowerCleaned.includes("gpt") ? "openai" :
+                     lowerCleaned.includes("anthropic") || lowerCleaned.includes("claude") ? "anthropic" :
+                     lowerCleaned.includes("gemini") ? "gemini" : "tie";
+      
+      return { winner, reasoning: cleaned.slice(0, 600) || "Unable to parse judge decision" };
     };
 
     const oaiJudge = parseWinner(oaiRaw);

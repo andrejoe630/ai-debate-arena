@@ -30,7 +30,7 @@ Return ONLY a JSON object with:
 }`;
 
 function parseWinner(raw: string): { winner: "affirmative" | "negative" | "tie"; reasoning: string } {
-  // Try to find and parse JSON object - be more flexible with whitespace
+  // Try to find and parse JSON object - extract ONLY the reasoning field
   const jsonMatch = raw.match(/\{[\s\S]*?\}/);
   if (jsonMatch) {
     try {
@@ -40,6 +40,7 @@ function parseWinner(raw: string): { winner: "affirmative" | "negative" | "tie";
         : "tie";
       const r = typeof obj.reasoning === "string" ? obj.reasoning.trim() : "";
       if (r) {
+        // Return ONLY the reasoning from JSON, ignore everything else
         return { winner: w, reasoning: r };
       }
     } catch (e) {
@@ -47,17 +48,25 @@ function parseWinner(raw: string): { winner: "affirmative" | "negative" | "tie";
     }
   }
   
-  // Fallback: try to extract structured info from raw text
-  const lowerRaw = raw.toLowerCase();
-  let winner: "affirmative" | "negative" | "tie" = "tie";
-  
-  if (lowerRaw.includes("affirmative") && lowerRaw.includes("win")) {
-    winner = "affirmative";
-  } else if (lowerRaw.includes("negative") && lowerRaw.includes("win")) {
-    winner = "negative";
+  // Fallback: Extract reasoning from any text after "reasoning"
+  // Remove any JSON-like text and just get the actual reasoning content
+  const reasoningMatch = raw.match(/["']?reasoning["']?\s*:\s*["']([^"']+)["']/);
+  if (reasoningMatch && reasoningMatch[1]) {
+    const winner = raw.toLowerCase().includes("affirmative") ? "affirmative" : 
+                   raw.toLowerCase().includes("negative") ? "negative" : "tie";
+    return { winner, reasoning: reasoningMatch[1].trim() };
   }
   
-  return { winner, reasoning: raw.trim().slice(0, 600) };
+  // Last resort: strip JSON markers and return clean text
+  const cleaned = raw.replace(/```json/gi, '')
+                     .replace(/```/g, '')
+                     .replace(/\{[^}]*"winner"[^}]*\}/gi, '')
+                     .trim();
+  
+  const winner = cleaned.toLowerCase().includes("affirmative") ? "affirmative" : 
+                 cleaned.toLowerCase().includes("negative") ? "negative" : "tie";
+  
+  return { winner, reasoning: cleaned.slice(0, 600) || "Unable to parse judge decision" };
 }
 
 export async function runJudges(input: {
