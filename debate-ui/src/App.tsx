@@ -98,19 +98,29 @@ export default function App() {
 
   const handleLoadDebate = (savedDebate: SavedDebate) => {
     setShowHistory(false);
+
+    // Clear ALL state to prevent mixing debates
+    setLoading(false);
+    setError(null);
+    setProgressStatus("");
+    setStreamingMessages([]);
+    setStreamingDiscussionMessages([]);
+    setStreamingMessageTexts({});
+    setMessageReactions({});
+
     if (savedDebate.mode === "debate" && savedDebate.debateResult) {
       setMode("debate");
       setResult(savedDebate.debateResult);
+      setDiscussionResult(null); // Clear discussion result
       setCurrentTopic(savedDebate.debateResult.topic);
-      setStreamingMessages([]);
     } else if (
       savedDebate.mode === "discussion" &&
       savedDebate.discussionResult
     ) {
       setMode("discussion");
       setDiscussionResult(savedDebate.discussionResult);
+      setResult(null); // Clear debate result
       setCurrentTopic(savedDebate.discussionResult.topic);
-      setStreamingDiscussionMessages([]);
     }
   };
 
@@ -1216,16 +1226,16 @@ export default function App() {
                         <div className="mt-12 pt-8 border-t border-gray-300">
                           <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
                             <p className="text-yellow-800 font-medium">
-                              No consensus reached after 15 messages. Judges
-                              voting on best perspective:
+                              💭 No consensus reached after 15 messages. Judges
+                              selected the most compelling perspective:
                             </p>
                           </div>
                           <div className="grid gap-4 md:grid-cols-3">
                             {discussionResult.verdicts.map((v) => {
-                              const getWinnerLabel = (winner: string) => {
-                                if (winner === "openai") return "🔵 GPT-5";
-                                if (winner === "anthropic") return "🟠 Claude";
-                                if (winner === "gemini") return "🟢 Gemini";
+                              const getBestStanceLabel = (stance: string) => {
+                                if (stance === "openai") return "🔵 GPT-5";
+                                if (stance === "anthropic") return "🟠 Claude";
+                                if (stance === "gemini") return "🟢 Gemini";
                                 return "TIE";
                               };
                               return (
@@ -1242,7 +1252,7 @@ export default function App() {
                                           : "Gemini Judge"}
                                     </span>
                                     <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700">
-                                      {getWinnerLabel(v.winner as string)}
+                                      {getBestStanceLabel(v.winner as string)}
                                     </span>
                                   </div>
                                   <p className="text-sm text-gray-600 leading-relaxed">
