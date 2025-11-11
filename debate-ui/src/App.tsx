@@ -1109,7 +1109,7 @@ export default function App() {
                 <div className="flex items-center gap-2 flex-shrink-0">
                   {/* Simple mode - single model picker */}
                   {mode === "debate" && !advancedMode && (
-                    <div className="flex items-center gap-2">
+                    <div className="hidden lg:flex items-center gap-2">
                       <select
                         value={singleModel}
                         onChange={(e) =>
@@ -1137,7 +1137,7 @@ export default function App() {
                   )}
                   {/* Advanced mode - two model pickers */}
                   {mode === "debate" && advancedMode && (
-                    <div className="flex items-center gap-2">
+                    <div className="hidden lg:flex items-center gap-2">
                       <select
                         value={affModel}
                         onChange={(e) =>
@@ -1177,7 +1177,7 @@ export default function App() {
                     </div>
                   )}
                   {mode === "discussion" && (
-                    <span className="text-xs text-gray-500 px-2">
+                    <span className="hidden lg:inline text-xs text-gray-500 px-2">
                       GPT-5 · Claude · Gemini
                     </span>
                   )}
