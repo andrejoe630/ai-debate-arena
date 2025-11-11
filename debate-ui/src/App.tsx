@@ -114,15 +114,15 @@ export default function App() {
     }
   };
 
-  // Debug log whenever advancedMode changes
-  console.log("🎭 DEBATE APP STATE:", {
-    mode,
-    advancedMode,
-    singleModel,
-    affModel,
-    negModel,
-    user: user?.uid,
-  });
+  // Debug log whenever advancedMode changes (disabled to prevent spam)
+  // console.log("🎭 DEBATE APP STATE:", {
+  //   mode,
+  //   advancedMode,
+  //   singleModel,
+  //   affModel,
+  //   negModel,
+  //   user: user?.uid,
+  // });
 
   const stopDebate = () => {
     console.log("🛑 Stopping debate/discussion");
@@ -281,8 +281,17 @@ export default function App() {
                   throw new Error(data.message);
                 }
                 currentEvent = "";
-              } catch (parseErr) {
+              } catch (parseErr: any) {
                 console.error("❌ Failed to parse SSE data:", parseErr, line);
+                // Check if the error contains API authentication issues
+                if (
+                  line.includes("401") &&
+                  line.includes("authentication_error")
+                ) {
+                  throw new Error(
+                    "401 Anthropic API authentication failed: " + line,
+                  );
+                }
               }
             }
           }
@@ -307,6 +316,12 @@ export default function App() {
 
       // Check for common API errors
       if (
+        err.message?.includes("401") &&
+        err.message?.includes("authentication_error")
+      ) {
+        errorMsg =
+          "🔑 Anthropic API key is invalid or expired. Please update your API key on the backend (Render dashboard).";
+      } else if (
         err.message?.includes("429") ||
         err.message?.includes("quota") ||
         err.message?.includes("rate limit")
@@ -323,9 +338,11 @@ export default function App() {
       } else if (
         err.message?.includes("401") ||
         err.message?.includes("unauthorized") ||
-        err.message?.includes("invalid api key")
+        err.message?.includes("invalid api key") ||
+        err.message?.includes("invalid x-api-key")
       ) {
-        errorMsg = "🔑 API authentication failed. Please check your API keys.";
+        errorMsg =
+          "🔑 API authentication failed. Please check your API keys in the backend settings.";
       } else if (
         err.message?.includes("503") ||
         err.message?.includes("overloaded")
@@ -435,11 +452,21 @@ export default function App() {
                   throw new Error(data.message);
                 }
                 currentEvent = "";
-              } catch (parseErr) {
+              } catch (parseErr: any) {
                 console.error(
                   "❌ Failed to parse discussion SSE data:",
                   parseErr,
+                  line,
                 );
+                // Check if the error contains API authentication issues
+                if (
+                  line.includes("401") &&
+                  line.includes("authentication_error")
+                ) {
+                  throw new Error(
+                    "401 Anthropic API authentication failed: " + line,
+                  );
+                }
               }
             }
           }
@@ -464,6 +491,12 @@ export default function App() {
 
       // Check for common API errors
       if (
+        err.message?.includes("401") &&
+        err.message?.includes("authentication_error")
+      ) {
+        errorMsg =
+          "🔑 Anthropic API key is invalid or expired. Please update your API key on the backend (Render dashboard).";
+      } else if (
         err.message?.includes("429") ||
         err.message?.includes("quota") ||
         err.message?.includes("rate limit")
@@ -480,9 +513,11 @@ export default function App() {
       } else if (
         err.message?.includes("401") ||
         err.message?.includes("unauthorized") ||
-        err.message?.includes("invalid api key")
+        err.message?.includes("invalid api key") ||
+        err.message?.includes("invalid x-api-key")
       ) {
-        errorMsg = "🔑 API authentication failed. Please check your API keys.";
+        errorMsg =
+          "🔑 API authentication failed. Please check your API keys in the backend settings.";
       } else if (
         err.message?.includes("503") ||
         err.message?.includes("overloaded")

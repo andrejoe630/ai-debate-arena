@@ -102,18 +102,24 @@ Write a brief opening (100-150 words) with 2-3 counter-arguments.`,
   async function checkForIntervention(
     lastMessage: Message,
   ): Promise<string | null> {
-    const checkPrompt = `You are a debate moderator. Analyze this argument for logical fallacies, bias, or misleading claims.
+    try {
+      const checkPrompt = `You are a debate moderator. Analyze this argument for logical fallacies, bias, or misleading claims.
 
 Argument: "${lastMessage.text}"
 
 If you detect ANY of these issues, respond with "INTERVENE: [brief 30-50 word explanation]"
 If the argument is sound, respond with "OK"`;
 
-    const check = await askClaude(checkPrompt);
-    if (check.startsWith("INTERVENE:")) {
-      return check.substring(10).trim();
+      const check = await askClaude(checkPrompt);
+      if (check.startsWith("INTERVENE:")) {
+        return check.substring(10).trim();
+      }
+      return null;
+    } catch (error) {
+      console.error("Moderator intervention check failed:", error);
+      // Return null to continue debate without intervention
+      return null;
     }
-    return null;
   }
 
   // Middle rounds: Rebuttals
@@ -253,17 +259,18 @@ Final statement in 75-100 words: summarize your strongest point and why you win.
   });
   onProgress?.("message", messages[messages.length - 1]);
 
-  // Moderator Analysis
-  onProgress?.("Moderator analyzing debate", { stage: "moderator" });
-  console.log("Moderator analyzing debate");
-  const fullTranscript = messages
-    .map((m) => `[${m.role.toUpperCase()} - Round ${m.round}]: ${m.text}`)
-    .join("\n\n");
+  // Moderator Analysis (optional - skip if Anthropic API unavailable)
+  try {
+    onProgress?.("Moderator analyzing debate", { stage: "moderator" });
+    console.log("Moderator analyzing debate");
+    const fullTranscript = messages
+      .map((m) => `[${m.role.toUpperCase()} - Round ${m.round}]: ${m.text}`)
+      .join("\n\n");
 
-  let moderatorSummary = "";
-  msgIndex = messages.length;
-  for await (const chunk of askClaudeStream(
-    `You are a neutral debate moderator analyzing this debate on: "${topic}"
+    let moderatorSummary = "";
+    msgIndex = messages.length;
+    for await (const chunk of askClaudeStream(
+      `You are a neutral debate moderator analyzing this debate on: "${topic}"
 
 Full transcript:
 ${fullTranscript}
@@ -273,18 +280,25 @@ Provide a brief analysis (150-200 words):
 2. Strongest arguments from each side
 3. Any logical gaps
 DO NOT pick a winner.`,
-  )) {
-    moderatorSummary += chunk;
-    onProgress?.("chunk", { text: chunk, msgIndex });
-  }
+    )) {
+      moderatorSummary += chunk;
+      onProgress?.("chunk", { text: chunk, msgIndex });
+    }
 
-  messages.push({
-    role: "moderator",
-    model: "anthropic",
-    text: moderatorSummary,
-    round: rounds + 1,
-  });
-  onProgress?.("message", messages[messages.length - 1]);
+    messages.push({
+      role: "moderator",
+      model: "anthropic",
+      text: moderatorSummary,
+      round: rounds + 1,
+    });
+    onProgress?.("message", messages[messages.length - 1]);
+  } catch (error) {
+    console.error("Moderator analysis failed (skipping):", error);
+    onProgress?.("Moderator unavailable - proceeding to judging", {
+      stage: "moderator",
+    });
+    // Continue without moderator analysis
+  }
 
   // Judging
   onProgress?.("Judges deliberating", { stage: "judging" });
