@@ -36,9 +36,9 @@ const MODEL_MAP_STREAM: Record<
 };
 
 const MODEL_NAMES = {
-  openai: "ChatGPT-5",
-  anthropic: "Claude 4.5 Sonnet",
-  gemini: "Gemini 2.5",
+  openai: "GPT-4o",
+  anthropic: "Claude 3.5 Sonnet",
+  gemini: "Gemini 1.5 Pro",
 };
 
 /**
@@ -138,7 +138,7 @@ export async function runDiscussion(
     let prompt: string;
     if (messages.length === 0) {
       // First message - OpenAI starts
-      prompt = `You are ${MODEL_NAMES[currentModel]} participating in a collaborative discussion with Claude 4.5 Sonnet and Gemini 2.5.
+      prompt = `You are ${MODEL_NAMES[currentModel]} participating in a collaborative discussion with Claude 3.5 Sonnet and Gemini 1.5 Pro.
 
 Topic: "${topic}"
 
