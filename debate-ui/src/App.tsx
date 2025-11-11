@@ -486,7 +486,10 @@ export default function App() {
         {/* Sidebar Navigation */}
         <div className="flex-1 overflow-y-auto p-2 space-y-1">
           <button
-            onClick={() => setShowTopics(true)}
+            onClick={() => {
+              setShowTopics(true);
+              setMobileMenuOpen(false);
+            }}
             className={`w-full px-3 py-2.5 rounded-md text-sm transition flex items-center ${
               sidebarCollapsed ? "justify-center" : "gap-3"
             } ${
@@ -500,7 +503,10 @@ export default function App() {
           </button>
 
           <button
-            onClick={() => setShowStats(true)}
+            onClick={() => {
+              setShowStats(true);
+              setMobileMenuOpen(false);
+            }}
             className={`w-full px-3 py-2.5 rounded-md text-sm transition flex items-center ${
               sidebarCollapsed ? "justify-center" : "gap-3"
             } ${
@@ -1311,17 +1317,29 @@ export default function App() {
         isOpen={showHistory}
         onClose={() => setShowHistory(false)}
         onLoadDebate={handleLoadDebate}
+        onBack={() => {
+          setShowHistory(false);
+          setMobileMenuOpen(true);
+        }}
         theme={theme}
       />
       <StatsModal
         isOpen={showStats}
         onClose={() => setShowStats(false)}
+        onBack={() => {
+          setShowStats(false);
+          setMobileMenuOpen(true);
+        }}
         theme={theme}
       />
       <TopicsBrowser
         isOpen={showTopics}
         onClose={() => setShowTopics(false)}
         onSelectTopic={(t) => setTopic(t)}
+        onBack={() => {
+          setShowTopics(false);
+          setMobileMenuOpen(true);
+        }}
         theme={theme}
       />
 
