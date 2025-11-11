@@ -708,6 +708,21 @@ export default function App() {
             }`}
           >
             <div className="max-w-3xl mx-auto">
+              {/* Settings Header */}
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">Settings</h3>
+                <button
+                  onClick={() => setShowSettings(false)}
+                  className={`p-2 rounded-lg transition ${
+                    theme === "dark"
+                      ? "hover:bg-gray-600 text-gray-400"
+                      : "hover:bg-gray-100 text-gray-600"
+                  }`}
+                >
+                  ✕
+                </button>
+              </div>
+
               <div className="flex gap-6 items-center">
                 <div className="flex-1">
                   <label
