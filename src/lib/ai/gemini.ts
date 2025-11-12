@@ -4,18 +4,18 @@ import { ENV } from "../config/env.js";
 
 /**
  * Ask Gemini with an optional model override.
- * Default model: gemini-1.5-flash
+ * Default model: gemini-1.5-flash-latest (required for streaming support)
  */
 export async function askGemini(
   prompt: string,
-  modelId: string = "gemini-1.5-flash",
+  modelId: string = "gemini-1.5-flash-latest",
 ): Promise<string> {
   if (!ENV.GOOGLE_API_KEY) {
     throw new Error("GOOGLE_API_KEY is missing in your environment (.env).");
   }
 
   const genAI = new GoogleGenerativeAI(ENV.GOOGLE_API_KEY);
-  const model = genAI.getGenerativeModel({ 
+  const model = genAI.getGenerativeModel({
     model: modelId,
     generationConfig: {
       maxOutputTokens: 4096,
@@ -38,14 +38,14 @@ export async function askGemini(
 
 export async function* askGeminiStream(
   prompt: string,
-  modelId: string = "gemini-1.5-flash",
+  modelId: string = "gemini-1.5-flash-latest",
 ): AsyncGenerator<string> {
   if (!ENV.GOOGLE_API_KEY) {
     throw new Error("GOOGLE_API_KEY is missing in your environment (.env).");
   }
 
   const genAI = new GoogleGenerativeAI(ENV.GOOGLE_API_KEY);
-  const model = genAI.getGenerativeModel({ 
+  const model = genAI.getGenerativeModel({
     model: modelId,
     generationConfig: {
       maxOutputTokens: 4096,
