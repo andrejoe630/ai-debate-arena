@@ -2,7 +2,7 @@ import OpenAI from "openai";
 import { ENV } from "../config/env.js";
 
 const openai = new OpenAI({ apiKey: ENV.OPENAI_API_KEY });
-const DEFAULT_MODEL = "gpt-5";
+const DEFAULT_MODEL = "gpt-4o";
 
 export async function askOpenAI(
   prompt: string,
@@ -49,19 +49,17 @@ export async function* askOpenAIStream(
     input: prompt,
   });
 
-  try {
-    for await (const rawEvent of stream as any) {
-      const event = rawEvent ?? {};
-      if (event.type === "error" || event.type === "response.error") {
-        const errMsg = event.error?.message ?? "Unknown OpenAI stream error";
-        throw new Error(errMsg);
-      }
+  for await (const rawEvent of stream as any) {
+    const event = rawEvent ?? {};
 
-      if (event.type === "response.output_text.delta") {
-        yield event.delta as string;
-      }
+    if (event.type === "error" || event.type === "response.error") {
+      const errMsg =
+        event.error?.message ?? event.message ?? "Unknown OpenAI stream error";
+      throw new Error(errMsg);
     }
-  } finally {
-    // The OpenAI SDK will clean up the stream automatically.
+
+    if (event.type === "response.output_text.delta") {
+      yield event.delta as string;
+    }
   }
 }
