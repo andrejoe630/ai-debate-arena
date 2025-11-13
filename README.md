@@ -27,7 +27,6 @@ A web application where AI models (OpenAI GPT-5.1, Anthropic Claude Sonnet 4.5, 
 - **Dark/Light Themes** - Toggle between comfortable viewing modes
 - **Debate History** - Save and revisit past debates
 - **Firebase Authentication** - Google sign-in and email/password support
-- **Emoji Reactions** - React to arguments with 🔥, 🤔, or 👏
 
 ---
 
@@ -272,7 +271,7 @@ MIT License - feel free to use this project for learning or commercial purposes.
 
 ## 🙏 Acknowledgments
 
-- **OpenAI** for GPT-4 API
+- **OpenAI** for GPT-5.1 API
 - **Anthropic** for Claude API
 - **Google** for Gemini API
 - **Vercel** for frontend hosting
