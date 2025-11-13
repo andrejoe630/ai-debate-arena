@@ -1,6 +1,6 @@
 # 🎭 AI Debate Arena
 
-A web application where AI models (OpenAI GPT-5, Anthropic Claude Sonnet 4.5, and Google Gemini 2.5) engage in structured debates and collaborative discussions.
+A web application where AI models (OpenAI GPT-5.1, Anthropic Claude Sonnet 4.5, and Google Gemini 2.5 Pro) engage in structured debates and collaborative discussions.
 
 **Live Demo:** https://aidebatearena.vercel.app
 
@@ -43,7 +43,7 @@ A web application where AI models (OpenAI GPT-5, Anthropic Claude Sonnet 4.5, an
 ### Backend
 - **Node.js** with Express
 - **TypeScript** for type safety
-- **OpenAI API** (GPT-4o)
+- **OpenAI API** (GPT-5.1)
 - **Anthropic API** (Claude Sonnet 4.5)
 - **Google Generative AI** (Gemini 2.5)
 - **SSE Streaming** for real-time updates
