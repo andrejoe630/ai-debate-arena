@@ -20,9 +20,9 @@ export default function StatsModal({ isOpen, onClose, theme }: Props) {
   if (!isOpen) return null
 
   const modelNames: Record<ModelKey, string> = {
-    openai: 'ChatGPT-5',
-    anthropic: 'Claude 4.5',
-    gemini: 'Gemini 2.5'
+    openai: 'GPT-5.1',
+    anthropic: 'Claude Sonnet 4.5',
+    gemini: 'Gemini 3'
   }
 
   const modelEmojis: Record<ModelKey, string> = {

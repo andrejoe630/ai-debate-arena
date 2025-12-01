@@ -25,11 +25,11 @@ export function getModelClient(model: ModelKey) {
 export function labelFor(model: ModelKey): string {
   switch (model) {
     case "openai":
-      return "OpenAI (GPT-5)";
+      return "OpenAI (GPT-5.1)";
     case "anthropic":
-      return "Claude 4.5 Sonnet";
+      return "Claude Sonnet 4.5";
     case "gemini":
-      return "Gemini 2.5 Pro";
+      return "Gemini 3";
     default:
       return model;
   }

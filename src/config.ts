@@ -15,7 +15,7 @@ export interface DebateConfig {
 export const CONFIG: DebateConfig = {
   topic: "Resolved: Cities should ban gasoline leaf blowers.",
   rounds: 2,
-  debaterA: "openai",   // GPT-5
+  debaterA: "openai",   // GPT-5.1
   debaterB: "claude",   // Sonnet 4.5
-  moderator: "gemini"   // Gemini 2.5 Pro
+  moderator: "gemini"   // Gemini 3
 };

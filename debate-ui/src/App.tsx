@@ -1000,10 +1000,10 @@ export default function App() {
                             gemini: "bg-green-500",
                           };
                           const modelDisplayNames: Record<string, string> = {
-                            'gpt-5': 'GPT-5',
-                            'openai': 'GPT-5',
-                            'anthropic': 'Claude 4.5',
-                            'gemini': 'Gemini 2.5',
+                            'gpt-5.1': 'GPT-5.1',
+                            'openai': 'GPT-5.1',
+                            'anthropic': 'Claude Sonnet 4.5',
+                            'gemini': 'Gemini 3',
                           };
                           return (
                             <div key={idx} className="animate-fadeIn">
@@ -1060,9 +1060,9 @@ export default function App() {
                                     gemini: "bg-green-500",
                                   };
                                   const modelNames = {
-                                    openai: "ChatGPT-5",
-                                    anthropic: "Claude 4.5",
-                                    gemini: "Gemini 2.5",
+                                    openai: "GPT-5.1",
+                                    anthropic: "Claude Sonnet 4.5",
+                                    gemini: "Gemini 3",
                                   };
                                   return (
                                     <>

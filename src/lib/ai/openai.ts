@@ -2,7 +2,7 @@ import OpenAI from "openai";
 import { ENV } from "../config/env.js";
 
 const openai = new OpenAI({ apiKey: ENV.OPENAI_API_KEY });
-const DEFAULT_MODEL = "gpt-4o";
+const DEFAULT_MODEL = "gpt-5.1";
 
 export async function askOpenAI(
   prompt: string,
