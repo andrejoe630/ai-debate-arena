@@ -11,7 +11,7 @@ export default function MessageWithReactions({ message, theme }: Props) {
     'gpt-5.1': 'GPT-5.1',
     'openai': 'GPT-5.1',
     'anthropic': 'Claude Sonnet 4.5',
-    'gemini': 'Gemini 3',
+    'gemini': 'Gemini 2.5 Flash',
   }
 
   const displayModel = modelDisplayNames[message.model] || message.model

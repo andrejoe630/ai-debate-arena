@@ -22,7 +22,7 @@ export default function StatsModal({ isOpen, onClose, theme }: Props) {
   const modelNames: Record<ModelKey, string> = {
     openai: 'GPT-5.1',
     anthropic: 'Claude Sonnet 4.5',
-    gemini: 'Gemini 3'
+    gemini: 'Gemini 2.5 Flash'
   }
 
   const modelEmojis: Record<ModelKey, string> = {

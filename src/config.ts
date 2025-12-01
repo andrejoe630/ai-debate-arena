@@ -17,5 +17,5 @@ export const CONFIG: DebateConfig = {
   rounds: 2,
   debaterA: "openai",   // GPT-5.1
   debaterB: "claude",   // Sonnet 4.5
-  moderator: "gemini"   // Gemini 3
+  moderator: "gemini"   // Gemini 2.5 Flash
 };

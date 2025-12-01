@@ -29,7 +29,7 @@ export function labelFor(model: ModelKey): string {
     case "anthropic":
       return "Claude Sonnet 4.5";
     case "gemini":
-      return "Gemini 3";
+      return "Gemini 2.5 Flash";
     default:
       return model;
   }
